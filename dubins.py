@@ -44,7 +44,33 @@ def nextPoint(event):
 
     draw(ax)
 
-# redrawing canvas
+# generates the dubin path
+def calcPath(ax):
+    p1 = [dronePos[0] + droneVec[1]*turningRadius, dronePos[1]-droneVec[0]*turningRadius]
+    p2 = [pointPos[0] - pointVec[1]*turningRadius, pointPos[1]-pointVec[0]*turningRadius]
+
+    V = [p2[0]-p1[0], p2[1]-p1[1]]
+    D = (V[0]**2 + V[1]**2)**.5
+
+    angle = math.acos(2*turningRadius/D) + math.atan2(V[1],V[0])
+
+    pf1 = [p1[0] + turningRadius * math.cos(angle), p1[1] + turningRadius * math.sin(angle)]
+    pf2 = [p2[0] - turningRadius * math.cos(angle), p2[1] - turningRadius * math.sin(angle)]
+
+    curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
+    curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
+
+    curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
+    curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
+
+    curve1 = Arc((p1[0],p1[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng1B*180/math.pi, theta2=curveAng1A*180/math.pi, color='purple', linewidth=1)
+    curve2 = Arc((p2[0],p2[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng2B*180/math.pi, theta2=curveAng2A*180/math.pi, color='purple', linewidth=1)
+
+    ax.add_patch(curve1)
+    ax.add_patch(curve2)
+    ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
+
+# redraws canvas
 def draw(ax):
     ax.clear()
     ax.set_xlim(0,width)
@@ -57,44 +83,18 @@ def draw(ax):
     ax.quiver(dronePos[0], dronePos[1], droneVec[0], droneVec[1], color='blue')
     ax.quiver(pointPos[0], pointPos[1], pointVec[0], pointVec[1], color='red')
     plt.draw()
+    calcPath(ax)
 
 # plot settings
 fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(bottom=0.2)
 
-
 dronePos = [20,20]
 pointPos = [80,40]
 droneVec = [0,1]
 pointVec = [0,-1]
-# droneVec = [0.5,0.75**.5]
-# pointVec = [0.5,-0.75**.5]
 
 draw(ax)
-
-p1 = [dronePos[0] + droneVec[1]*turningRadius, dronePos[1]-droneVec[0]*turningRadius]
-p2 = [pointPos[0] - pointVec[1]*turningRadius, pointPos[1]-pointVec[0]*turningRadius]
-
-V = [p2[0]-p1[0], p2[1]-p1[1]]
-D = (V[0]**2 + V[1]**2)**.5
-
-angle = math.acos(2*turningRadius/D) + math.atan2(V[1],V[0])
-
-pf1 = [p1[0] + turningRadius * math.cos(angle), p1[1] + turningRadius * math.sin(angle)]
-pf2 = [p2[0] - turningRadius * math.cos(angle), p2[1] - turningRadius * math.sin(angle)]
-
-curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
-curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
-
-curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
-curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
-
-curve1 = Arc((p1[0],p1[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng1B*180/math.pi, theta2=curveAng1A*180/math.pi, color='purple', linewidth=1)
-curve2 = Arc((p2[0],p2[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng2B*180/math.pi, theta2=curveAng2A*180/math.pi, color='purple', linewidth=1)
-
-ax.add_patch(curve1)
-ax.add_patch(curve2)
-ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
 
 # listed below are points/lines used for calculations that can be visualized if wanted
 # ax.plot(p1[0], p1[1], 'bo', label='Point 1')
@@ -103,7 +103,6 @@ ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
 # ax.plot(pf2[0], pf2[1], 'ro', label='Point 2')
 # ax.add_patch(c1)
 # ax.add_patch(c2)
-
 
 button_ax = plt.axes([0.05, 0.05, 0.9, 0.08])  # [left, bottom, width, height]
 button = Button(button_ax, 'Generate next waypoint')
