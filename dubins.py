@@ -46,16 +46,36 @@ def nextPoint(event):
 
 # generates the dubin path
 def calcPath(ax):
-    p1 = [dronePos[0] + droneVec[1]*turningRadius, dronePos[1]-droneVec[0]*turningRadius]
-    p2 = [pointPos[0] - pointVec[1]*turningRadius, pointPos[1]-pointVec[0]*turningRadius]
+    p1 = [None, None]
+    p2 = [None, None]
+
+    if (dronePos[0] < pointPos[0]):
+        p1[0] = dronePos[0] + abs(droneVec[1]*turningRadius)
+        p2[0] = pointPos[0] - abs(pointVec[1]*turningRadius)
+    else:
+        p1[0] = dronePos[0] - abs(droneVec[1]*turningRadius)
+        p2[0] = pointPos[0] + abs(pointVec[1]*turningRadius)
+
+    if (dronePos[1] < pointPos[1]):
+        p1[1] = dronePos[1] + abs(droneVec[0]*turningRadius)
+        p2[1] = pointPos[1] - abs(pointVec[0]*turningRadius)
+    else:
+        p1[1] = dronePos[1] - abs(droneVec[0]*turningRadius)
+        p2[1] = pointPos[1] + abs(pointVec[0]*turningRadius)
 
     V = [p2[0]-p1[0], p2[1]-p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
     angle = math.acos(2*turningRadius/D) + math.atan2(V[1],V[0])
 
-    pf1 = [p1[0] + turningRadius * math.cos(angle), p1[1] + turningRadius * math.sin(angle)]
-    pf2 = [p2[0] - turningRadius * math.cos(angle), p2[1] - turningRadius * math.sin(angle)]
+    xdiff = turningRadius * math.cos(angle)
+    ydiff = turningRadius * math.sin(angle)
+
+    # if dronePos[0] < pointPos[0]:
+
+
+    pf1 = [p1[0] + xdiff, p1[1] + ydiff]
+    pf2 = [p2[0] - xdiff, p2[1] - ydiff]
 
     curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
     curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
@@ -69,6 +89,14 @@ def calcPath(ax):
     ax.add_patch(curve1)
     ax.add_patch(curve2)
     ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
+
+    # listed below are points/lines used for calculations that can be visualized if wanted
+    ax.plot(p1[0], p1[1], 'bo', label='Point 1')
+    ax.plot(p2[0], p2[1], 'ro', label='Point 2')
+    # ax.plot(pf1[0], pf1[1], 'bo', label='Point 1')
+    # ax.plot(pf2[0], pf2[1], 'ro', label='Point 2')
+    # ax.add_patch(c1)
+    # ax.add_patch(c2)
 
 # redraws canvas
 def draw(ax):
@@ -89,22 +117,15 @@ def draw(ax):
 fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(bottom=0.2)
 
-dronePos = [20,20]
-pointPos = [80,40]
+dronePos = [80,20]
+pointPos = [20,20]
 droneVec = [0,1]
-pointVec = [0,-1]
+pointVec = [0,1]
 
 draw(ax)
 
-# listed below are points/lines used for calculations that can be visualized if wanted
-# ax.plot(p1[0], p1[1], 'bo', label='Point 1')
-# ax.plot(p2[0], p2[1], 'ro', label='Point 2')
-# ax.plot(pf1[0], pf1[1], 'bo', label='Point 1')
-# ax.plot(pf2[0], pf2[1], 'ro', label='Point 2')
-# ax.add_patch(c1)
-# ax.add_patch(c2)
-
-button_ax = plt.axes([0.05, 0.05, 0.9, 0.08])  # [left, bottom, width, height]
+# button for next waypoint
+button_ax = plt.axes([0.05, 0.05, 0.9, 0.08])
 button = Button(button_ax, 'Generate next waypoint')
 button.on_clicked(nextPoint)
 
