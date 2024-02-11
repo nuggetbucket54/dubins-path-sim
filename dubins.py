@@ -33,8 +33,7 @@ def genVec():
 
 # generates the next waypoint
 def nextPoint(event):
-    print("HI!")
-    global dronePos, droneVec, pointPos, pointVec
+    global dronePos, droneVec, pointPos, pointVec, ax
 
     dronePos = pointPos
     droneVec = pointVec
@@ -42,14 +41,20 @@ def nextPoint(event):
     pointPos = genCoords()
     pointVec = genVec()
 
-    draw()
+    draw(ax)
 
 def draw(ax):
-    
-    ax.plot(dronePos[0], dronePos[1], 'ro', label='Point 1')
-    ax.plot(pointPos[0], pointPos[1], 'bo', label='Point 2')
-    ax.quiver(dronePos[0], dronePos[1], droneVec[0], droneVec[1], color='red')
-    ax.quiver(pointPos[0], pointPos[1], pointVec[0], pointVec[1], color='blue')
+    global dronePos, droneVec, pointPos, pointVec
+
+    ax.clear()
+    ax.set_xlim(0,width)
+    ax.set_ylim(0,height)
+
+    ax.plot(dronePos[0], dronePos[1], 'bo', label='Point 1')
+    ax.plot(pointPos[0], pointPos[1], 'ro', label='Point 2')
+    ax.quiver(dronePos[0], dronePos[1], droneVec[0], droneVec[1], color='blue')
+    ax.quiver(pointPos[0], pointPos[1], pointVec[0], pointVec[1], color='red')
+    plt.draw()
 
 dronePos = genCoords()
 pointPos = genCoords()
@@ -59,8 +64,8 @@ pointVec = genVec()
 # plot settings
 fig, ax = plt.subplots()
 plt.subplots_adjust(bottom=0.25)
-ax.set_xlim(0,width)
-ax.set_ylim(0,height)
+
+
 ax.set_title('Dubins path sim')
 
 draw(ax)
