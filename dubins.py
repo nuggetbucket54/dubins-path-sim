@@ -43,12 +43,12 @@ def nextPoint(event):
 
     draw(ax)
 
+# redrawing canvas
 def draw(ax):
-    global dronePos, droneVec, pointPos, pointVec
-
     ax.clear()
     ax.set_xlim(0,width)
     ax.set_ylim(0,height)
+    ax.set_title('Dubins path sim')
 
     ax.plot(dronePos[0], dronePos[1], 'bo', label='Point 1')
     ax.plot(pointPos[0], pointPos[1], 'ro', label='Point 2')
@@ -56,19 +56,24 @@ def draw(ax):
     ax.quiver(pointPos[0], pointPos[1], pointVec[0], pointVec[1], color='red')
     plt.draw()
 
-dronePos = genCoords()
-pointPos = genCoords()
-droneVec = genVec()
-pointVec = genVec()
-
 # plot settings
 fig, ax = plt.subplots()
 plt.subplots_adjust(bottom=0.25)
 
 
-ax.set_title('Dubins path sim')
+dronePos = [20,20]
+pointPos = [80,40]
+droneVec = [0,1]
+pointVec = [0,-1]
 
 draw(ax)
+
+p1 = [dronePos[0] + droneVec[1]*turningRadius, dronePos[1]-droneVec[0]*turningRadius]
+p2 = [pointPos[0] + pointVec[1]*turningRadius, pointPos[1]-pointVec[0]*turningRadius]
+ax.plot(p1[0], p1[1], 'bo', label='Point 1')
+ax.plot(p2[0], p2[1], 'ro', label='Point 2')
+
+
 
 button_ax = plt.axes([0.05, 0.05, 0.9, 0.1])  # [left, bottom, width, height]
 button = Button(button_ax, 'Generate next waypoint')
