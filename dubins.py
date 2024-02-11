@@ -77,11 +77,18 @@ p2 = [pointPos[0] - pointVec[1]*turningRadius, pointPos[1]-pointVec[0]*turningRa
 c1 = Circle((p1[0], p1[1]), turningRadius, fill=False, color='blue')
 c2 = Circle((p2[0], p2[1]), turningRadius, fill=False, color='blue')
 
-D = ((p2[0]-p1[0])**2 + (p2[1]-p1[1])**2)**.5
+V = [p2[0]-p1[0], p2[1]-p1[1]]
+D = (V[0]**2 + V[1]**2)**.5
 
+angle = math.acos(2*turningRadius/D) + math.atan2(V[1],V[0])
+
+pf1 = [p1[0] + turningRadius * math.cos(angle), p1[1] + turningRadius * math.sin(angle)]
+pf2 = [p2[0] - turningRadius * math.cos(angle), p2[1] - turningRadius * math.sin(angle)]
 
 ax.plot(p1[0], p1[1], 'bo', label='Point 1')
 ax.plot(p2[0], p2[1], 'ro', label='Point 2')
+ax.plot(pf1[0], pf1[1], 'bo', label='Point 1')
+ax.plot(pf2[0], pf2[1], 'ro', label='Point 2')
 ax.add_patch(c1)
 ax.add_patch(c2)
 
