@@ -1,5 +1,6 @@
 import random, math
 import matplotlib.pyplot as plt
+from matplotlib.patches import Circle
 from matplotlib.widgets import Button
 from typing import Tuple
 
@@ -48,6 +49,7 @@ def draw(ax):
     ax.clear()
     ax.set_xlim(0,width)
     ax.set_ylim(0,height)
+    ax.set_aspect('equal')
     ax.set_title('Dubins path sim')
 
     ax.plot(dronePos[0], dronePos[1], 'bo', label='Point 1')
@@ -57,21 +59,31 @@ def draw(ax):
     plt.draw()
 
 # plot settings
-fig, ax = plt.subplots()
+fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(bottom=0.25)
 
 
 dronePos = [20,20]
 pointPos = [80,40]
 droneVec = [0,1]
-pointVec = [0,-1]
+pointVec = [0,1]
+# droneVec = [0.5,0.75**.5]
+# pointVec = [0.5,-0.75**.5]
 
 draw(ax)
 
 p1 = [dronePos[0] + droneVec[1]*turningRadius, dronePos[1]-droneVec[0]*turningRadius]
-p2 = [pointPos[0] + pointVec[1]*turningRadius, pointPos[1]-pointVec[0]*turningRadius]
+p2 = [pointPos[0] - pointVec[1]*turningRadius, pointPos[1]-pointVec[0]*turningRadius]
+c1 = Circle((p1[0], p1[1]), turningRadius, fill=False, color='blue')
+c2 = Circle((p2[0], p2[1]), turningRadius, fill=False, color='blue')
+
+D = ((p2[0]-p1[0])**2 + (p2[1]-p1[1])**2)**.5
+
+
 ax.plot(p1[0], p1[1], 'bo', label='Point 1')
 ax.plot(p2[0], p2[1], 'ro', label='Point 2')
+ax.add_patch(c1)
+ax.add_patch(c2)
 
 
 
