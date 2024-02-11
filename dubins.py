@@ -13,12 +13,12 @@ def genCoords():
 
 # generates two vectors representing drone orientation
 def genVecs():
-    x1 = random.uniform(-10,10)
-    x2 = random.uniform(-10,10)
+    x1 = random.uniform(-1,1)
+    x2 = random.uniform(-1,1)
 
     # generate y component from x component
-    y1 = (100-x1**2)**.5
-    y2 = (100-x2**2)**.5
+    y1 = (1-x1**2)**.5
+    y2 = (1-x2**2)**.5
 
     # determine positive/negative y component
     if (random.randint(0,1)%2):
@@ -35,9 +35,14 @@ ax.set_ylim(0,height)
 ax.set_title('Dubins path sim')
 
 # plot points
-m,n = genCoords()
-ax.plot(m[0], m[1], 'ro', label='Point 1')
-ax.plot(n[0], n[1], 'bo', label='Point 2')
+M,N = genCoords()
+A,B = genVecs()
+ax.plot(M[0], M[1], 'ro', label='Point 1')
+ax.plot(N[0], N[1], 'bo', label='Point 2')
+ax.quiver(M[0], M[1], A[0], A[1], color='red')
+ax.quiver(N[0], N[1], B[0], B[1], color='blue')
+
+
 
 # Display the plot
 plt.show()
