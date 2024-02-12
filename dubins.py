@@ -8,6 +8,7 @@ from typing import Tuple
 width=100
 height=80
 turningRadius = 5
+PI = math.pi
 
 dronePos: Tuple[int, int]
 droneVec: Tuple[float, float]
@@ -46,8 +47,38 @@ def nextPoint(event):
 
 # generates the dubin path
 def calcPath(ax):
+
     p1 = [None, None]
     p2 = [None, None]
+
+    droneAngle = math.atan2(droneVec[1], droneVec[0])
+    droneAngle += PI/2
+
+    if (droneAngle > PI):
+        droneAngle -= 2*PI
+
+    pointAngle = math.atan2(pointVec[1], pointVec[0])
+
+    print("\n")
+    print(f"drone angle: {droneAngle}, point angle: {pointAngle}")
+    print(f"drone vector: {droneVec[0]}, {droneVec[1]}")
+    print(f"point vector: {pointVec[0]}, {pointVec[1]}")
+
+    path = "none"
+
+    # if (dronePos[0] < pointPos[0] and droneAngle < pointAngle):
+    #     p1[0] = dronePos[0] + abs(droneVec[1]*turningRadius)
+    #     p2[0] = pointPos[0] - abs(pointVec[1]*turningRadius)
+    # else:
+    #     p1[0] = dronePos[0] - abs(droneVec[1]*turningRadius)
+    #     p2[0] = pointPos[0] + abs(pointVec[1]*turningRadius)
+
+    # if (dronePos[1] < pointPos[1]):
+    #     p1[1] = dronePos[1] + abs(droneVec[0]*turningRadius)
+    #     p2[1] = pointPos[1] - abs(pointVec[0]*turningRadius)
+    # else:
+    #     p1[1] = dronePos[1] - abs(droneVec[0]*turningRadius)
+    #     p2[1] = pointPos[1] + abs(pointVec[0]*turningRadius)
 
     if (dronePos[0] < pointPos[0]):
         p1[0] = dronePos[0] + abs(droneVec[1]*turningRadius)
@@ -56,12 +87,26 @@ def calcPath(ax):
         p1[0] = dronePos[0] - abs(droneVec[1]*turningRadius)
         p2[0] = pointPos[0] + abs(pointVec[1]*turningRadius)
 
-    if (dronePos[1] < pointPos[1]):
-        p1[1] = dronePos[1] + abs(droneVec[0]*turningRadius)
-        p2[1] = pointPos[1] - abs(pointVec[0]*turningRadius)
+        # if (0 < droneVec[1]):   # RSR
+        #     p1 = [dronePos[0] + droneVec[1]*turningRadius, dronePos[1] - droneVec[0]*turningRadius]
+        #     p2 = [pointPos[0] + pointVec[1]*turningRadius, pointPos[1] - pointVec[0]*turningRadius]
+        #     path = "RSR"
+        # else:   # LSR
+        #     p1 = [dronePos[0] - droneVec[1]*turningRadius, dronePos[1] + droneVec[0]*turningRadius]
+        #     p2 = [pointPos[0] + pointVec[1]*turningRadius, pointPos[1] - pointVec[0]*turningRadius]
+        #     path = "LSR"
+
     else:
-        p1[1] = dronePos[1] - abs(droneVec[0]*turningRadius)
-        p2[1] = pointPos[1] + abs(pointVec[0]*turningRadius)
+        if (droneAngle < pointAngle):   # RSL
+            p1 = [dronePos[0] + droneVec[1]*turningRadius, dronePos[1] - droneVec[0]*turningRadius]
+            p2 = [pointPos[0] - pointVec[1]*turningRadius, pointPos[1] + pointVec[0]*turningRadius]
+            path = "RSL"
+        else:   # LSL
+            p1 = [dronePos[0] - droneVec[1]*turningRadius, dronePos[1] + droneVec[0]*turningRadius]
+            p2 = [pointPos[0] - pointVec[1]*turningRadius, pointPos[1] + pointVec[0]*turningRadius]
+            path = "LSL"
+
+    print(path)
 
     V = [p2[0]-p1[0], p2[1]-p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
@@ -83,8 +128,8 @@ def calcPath(ax):
     curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
     curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
 
-    curve1 = Arc((p1[0],p1[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng1B*180/math.pi, theta2=curveAng1A*180/math.pi, color='purple', linewidth=1)
-    curve2 = Arc((p2[0],p2[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng2B*180/math.pi, theta2=curveAng2A*180/math.pi, color='purple', linewidth=1)
+    curve1 = Arc((p1[0],p1[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
+    curve2 = Arc((p2[0],p2[1]), 2*turningRadius, 2*turningRadius, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
     ax.add_patch(curve1)
     ax.add_patch(curve2)
