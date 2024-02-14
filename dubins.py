@@ -75,12 +75,18 @@ def drawPath(ax):
     pointLeft = [pointPos[0] + TURNRADIUS * math.cos(pointLeftAngle), pointPos[1] + TURNRADIUS * math.sin(pointLeftAngle)]
     pointRight = [pointPos[0] + TURNRADIUS * math.cos(pointRightAngle), pointPos[1] + TURNRADIUS * math.sin(pointRightAngle)]
 
-    # if dronePos[0] < pointPos[0]:
-    #     if droneVec[1] > 0:
-    #         if pointVec[1] > 0:
-    #             RSR(droneRight, pointRight, dronePos, pointPos)
-    #         else:
-    #             RSR(droneRight, pointLeft)
+    RSR(droneRight, pointRight, dronePos, pointPos)
+
+    # if droneVec[1] > 0:
+    #     if pointVec[1] > 0:
+    #         RSR(droneRight, pointRight, dronePos, pointPos)
+    #     else:
+    #         RSR(droneRight, pointLeft, dronePos, pointPos)
+    # else:
+    #     if pointVec[1] > 0:
+    #         RSR(droneLeft, pointRight, dronePos, pointPos)
+    #     else:
+    #         RSR(droneLeft, pointLeft, dronePos, pointPos)
 
     # listed below are points/lines used for calculations that can be visualized if wanted
     ax.plot(droneLeft[0], droneLeft[1], 'bo', label='Point 1')
