@@ -110,7 +110,7 @@ def RSR(p1, p2, dronePos, pointPos):
     ydiff = TURNRADIUS * math.sin(angle)
 
     pf1 = [p1[0] + xdiff, p1[1] + ydiff]
-    pf2 = [p2[0] - xdiff, p2[1] + ydiff]
+    pf2 = [p2[0] + xdiff, p2[1] + ydiff]
 
     curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
     curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
@@ -119,7 +119,7 @@ def RSR(p1, p2, dronePos, pointPos):
     curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
 
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
+    curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
     ax.add_patch(curve1)
     ax.add_patch(curve2)
