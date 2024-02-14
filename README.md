@@ -15,5 +15,5 @@ A simulation for finding the optimal path of UAS drone given turning radius and 
 ![](/example.png)
 
 
-## The math (it's really long lol only look at it if you really want to)
+## The math (it's really long lol, only look at it if you really want to)
 ![](/math.png)
