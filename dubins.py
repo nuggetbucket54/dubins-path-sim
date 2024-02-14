@@ -68,10 +68,12 @@ def drawPath(ax):
     pointLeft = [pointPos[0] + TURNRADIUS * math.cos(pointLeftAngle), pointPos[1] + TURNRADIUS * math.sin(pointLeftAngle)]
     pointRight = [pointPos[0] + TURNRADIUS * math.cos(pointRightAngle), pointPos[1] + TURNRADIUS * math.sin(pointRightAngle)]
 
-    RSR(droneRight, pointRight, dronePos, pointPos)
+    # RSR(droneRight, pointRight, dronePos, pointPos)
     # LSL(droneLeft, pointLeft, dronePos, pointPos)
     # RSL(droneRight, pointLeft, dronePos, pointPos)
     # LSR(droneLeft, pointRight, dronePos, pointPos)
+
+    # paths = []
 
     # listed below are points/lines used for calculations that can be visualized if wanted
     # ax.plot(droneLeft[0], droneLeft[1], 'bo', label='Point 1')
@@ -107,6 +109,7 @@ def RSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
+    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
     
     # add curves to graph
     ax.add_patch(curve1)
@@ -166,35 +169,8 @@ def RSL(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
-    # add curves to graph
-    ax.add_patch(curve1)
-    ax.add_patch(curve2)
-    ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
-
-# path for right-straight-left path
-def RSL(p1, p2, dronePos, pointPos):
-    V = [p2[0] - p1[0], p2[1] - p1[1]]
-    D = (V[0]**2 + V[1]**2)**.5
-
-    angle = math.acos(2*TURNRADIUS/D) + math.atan2(V[1],V[0])
-
-    xdiff = TURNRADIUS * math.cos(angle)
-    ydiff = TURNRADIUS * math.sin(angle)
-
-    # tangent points of circles
-    pf1 = [p1[0] + xdiff, p1[1] + ydiff]
-    pf2 = [p2[0] - xdiff, p2[1] - ydiff]
-
-    # angle calculations for drawing curves
-    curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
-    curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
-
-    curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
-    curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
-
-    curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
-
+    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
+    
     # add curves to graph
     ax.add_patch(curve1)
     ax.add_patch(curve2)
@@ -224,6 +200,8 @@ def LSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
+    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
+    
     # add curves to graph
     ax.add_patch(curve1)
     ax.add_patch(curve2)
