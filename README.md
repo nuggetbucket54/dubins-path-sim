@@ -2,7 +2,7 @@
 A simulation for finding the optimal path of UAS drone given turning radius and waypoint coordinates
 
 ## What are Dubin's paths
-- Basically the shortest path from one orientation at a point to another orientation at another point provided that the vehicle can only move forward and also has a minimum turning radius
+- Basically just the shortest path from one orientation & position to another orientation & position for a vehicle that can only move forward and also has a minimum turning radius
 - Two types of Dubin's paths: CSC (curve + straight line + curve) and CCC (curve + curve + curve)
   
     ![Main-types-of-Dubins-paths](https://github.com/nuggetbucket54/dubins-path-sim/assets/55860775/8a815619-61e1-4907-a719-fdaa727f8dc8)
