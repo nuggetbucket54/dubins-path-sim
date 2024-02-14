@@ -45,7 +45,6 @@ def nextPoint(event):
 
     draw(ax)
 
-# draws the best CSC dubin path
 def drawPath(ax):
     # finding focii of circles for drone
     droneAngle = math.atan2(droneVec[1], droneVec[0])
@@ -77,22 +76,11 @@ def drawPath(ax):
 
     RSR(droneRight, pointRight, dronePos, pointPos)
 
-    # if droneVec[1] > 0:
-    #     if pointVec[1] > 0:
-    #         RSR(droneRight, pointRight, dronePos, pointPos)
-    #     else:
-    #         RSR(droneRight, pointLeft, dronePos, pointPos)
-    # else:
-    #     if pointVec[1] > 0:
-    #         RSR(droneLeft, pointRight, dronePos, pointPos)
-    #     else:
-    #         RSR(droneLeft, pointLeft, dronePos, pointPos)
-
     # listed below are points/lines used for calculations that can be visualized if wanted
-    ax.plot(droneLeft[0], droneLeft[1], 'bo', label='Point 1')
-    ax.plot(droneRight[0], droneRight[1], 'bo', label='Point 1')
-    ax.plot(pointLeft[0], pointLeft[1], 'ro', label='Point 1')
-    ax.plot(pointRight[0], pointRight[1], 'ro', label='Point 1')
+    # ax.plot(droneLeft[0], droneLeft[1], 'bo', label='Point 1')
+    # ax.plot(droneRight[0], droneRight[1], 'bo', label='Point 1')
+    # ax.plot(pointLeft[0], pointLeft[1], 'ro', label='Point 1')
+    # ax.plot(pointRight[0], pointRight[1], 'ro', label='Point 1')
     # ax.plot(pf1[0], pf1[1], 'bo', label='Point 1')
     # ax.plot(pf2[0], pf2[1], 'ro', label='Point 2')
     # ax.add_patch(c1)
@@ -100,18 +88,20 @@ def drawPath(ax):
 
 
 def RSR(p1, p2, dronePos, pointPos):
+    # vector between two focii of circles
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
-    print(D)
 
     angle = math.acos(2*TURNRADIUS/D) + math.atan2(V[1],V[0])
 
     xdiff = TURNRADIUS * math.cos(angle)
     ydiff = TURNRADIUS * math.sin(angle)
 
+    # tangent points of circles
     pf1 = [p1[0] + xdiff, p1[1] + ydiff]
     pf2 = [p2[0] + xdiff, p2[1] + ydiff]
 
+    # angle calculations for drawing curves
     curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
     curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
 
@@ -121,6 +111,7 @@ def RSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
+    # add curves to graph
     ax.add_patch(curve1)
     ax.add_patch(curve2)
     ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
