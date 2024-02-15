@@ -123,12 +123,7 @@ def RSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
-    
-    # add curves to graph
-    #ax.add_patch(curve1)
-    #ax.add_patch(curve2)
-    #ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
+    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), pf1, pf2, curve1, curve2]
 
 # path for left-straight-left path
 def LSL(p1, p2, dronePos, pointPos):
@@ -154,12 +149,7 @@ def LSL(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
-
-    # add curves to graph
-    #ax.add_patch(curve1)
-    #ax.add_patch(curve2)
-    #ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
+    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
 
 # path for right-straight-left path
 def RSL(p1, p2, dronePos, pointPos):
@@ -186,11 +176,6 @@ def RSL(p1, p2, dronePos, pointPos):
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
     return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
-    
-    # add curves to graph
-    #ax.add_patch(curve1)
-    #ax.add_patch(curve2)
-    #ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
 
 # path for right-straight-left path
 def LSR(p1, p2, dronePos, pointPos):
@@ -216,12 +201,7 @@ def LSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
-    
-    # add curves to graph
-    #ax.add_patch(curve1)
-    #ax.add_patch(curve2)
-    #ax.plot([pf1[0], pf2[0]], [pf1[1], pf2[1]], color='purple', linewidth=1)
+    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), pf1, pf2, curve1, curve2]
 
 # redraws canvas
 def draw(ax):
