@@ -40,7 +40,6 @@ def nextPoint(event):
     draw(ax)
 
 def findPath(paths):
-    print(paths)
     shortest = paths[0][0]
     ind = 0
     for i in range(len(paths)):
@@ -78,16 +77,22 @@ def drawPath(ax):
     pointLeft = [pointPos[0] + TURNRADIUS * math.cos(pointLeftAngle), pointPos[1] + TURNRADIUS * math.sin(pointLeftAngle)]
     pointRight = [pointPos[0] + TURNRADIUS * math.cos(pointRightAngle), pointPos[1] + TURNRADIUS * math.sin(pointRightAngle)]
 
-    paths = [ RSR(droneRight, pointRight, dronePos, pointPos),
-              LSL(droneLeft, pointLeft, dronePos, pointPos)  ,
-              RSL(droneRight, pointLeft, dronePos, pointPos) ,
-              LSR(droneLeft, pointRight, dronePos, pointPos)   ]
+    # dist = ((pointPos[0] - dronePos[0])**2 + (pointPos[1] - dronePos[1])**2)**.5
 
-    bestPath = paths[findPath(paths)]
+    # if (dist < )
 
-    ax.plot([bestPath[1][0], bestPath[2][0]], [bestPath[1][1], bestPath[2][1]], color='purple', linewidth = 1)
-    ax.add_patch(bestPath[3])
-    ax.add_patch(bestPath[4])
+    RLR(droneRight, pointRight, dronePos, pointPos)
+
+    # paths = [ RSR(droneRight, pointRight, dronePos, pointPos),
+    #           LSL(droneLeft, pointLeft, dronePos, pointPos)  ,
+    #           RSL(droneRight, pointLeft, dronePos, pointPos) ,
+    #           LSR(droneLeft, pointRight, dronePos, pointPos)   ]
+
+    # bestPath = paths[findPath(paths)]
+
+    # ax.plot([bestPath[1][0], bestPath[2][0]], [bestPath[1][1], bestPath[2][1]], color='purple', linewidth = 1)
+    # ax.add_patch(bestPath[3])
+    # ax.add_patch(bestPath[4])
 
     # listed below are points/lines used for calculations that can be visualized if wanted
     # ax.plot(droneLeft[0], droneLeft[1], 'bo', label='Point 1')
@@ -98,6 +103,38 @@ def drawPath(ax):
     # ax.plot(pf2[0], pf2[1], 'ro', label='Point 2')
     # ax.add_patch(c1)
     # ax.add_patch(c2)
+
+# path for right-left-right path
+def RLR(p1, p2, dronePos, pointPos):
+    V = [p2[0] - p1[0], p2[1] - p1[1]]
+    D = (V[0]**2 + V[1]**2)**.5
+
+    angle = math.acos(D/(4 * TURNRADIUS)) - math.atan2(V[1], V[0])
+
+    p3 = [p1[0] + 2 * TURNRADIUS * math.cos(angle), p1[1] + 2 * TURNRADIUS * math.sin(angle)]
+
+    p1p3 = [p3[0] - p1[0], p3[1] - p1[1]]
+    p2p3 = [p3[0] - p2[0], p3[1] - p2[1]]
+
+    pt1 = [p1[0] + (p1p3[0] / 2), p1[1] + (p1p3[1] / 2)]
+    pt2 = [p2[0] + (p2p3[0] / 2), p2[1] + (p2p3[1] / 2)]
+
+    angle1 = math.atan2(dronePos[1] - p1[1], dronePos[0] - p1[0])
+    angle2 = math.atan2(pt1[1] - p1[1], pt1[0] - p1[0])
+    angle3 = math.atan2(pt1[1] - p3[1], pt1[0] - p3[0])
+    angle4 = math.atan2(pt2[1] - p3[1], pt2[0] - p3[0])
+    angle5 = math.atan2(pt2[1] - p2[1], pt2[0] - p2[0])
+    angle6 = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
+
+    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle2*180/PI, theta2=angle1*180/PI, color='purple', linewidth=1)
+    curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle3*180/PI, theta2=angle4*180/PI, color='purple', linewidth=1)
+    curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle6*180/PI, theta2=angle5*180/PI, color='purple', linewidth=1)
+
+    ax.add_patch(curve1)
+    ax.add_patch(curve2)
+    ax.add_patch(curve3)
+
+    return
 
 # path for right-straight-right path
 def RSR(p1, p2, dronePos, pointPos):
@@ -114,11 +151,11 @@ def RSR(p1, p2, dronePos, pointPos):
     pf2 = [p2[0] + xdiff, p2[1] + ydiff]
 
     # angle calculations for drawing curves
-    curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
-    curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
+    curveAng1A = math.atan2(dronePos[1] - p1[1], dronePos[0] - p1[0])
+    curveAng1B = math.atan2(pf1[1] - p1[1], pf1[0] - p1[0])
 
-    curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
-    curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
+    curveAng2A = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
+    curveAng2B = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
@@ -222,10 +259,10 @@ def draw(ax):
 fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(bottom=0.2)
 
-dronePos = genCoords()
-pointPos = genCoords()
-droneVec = genVec()
-pointVec = genVec()
+dronePos = [50, 20]  # genCoords()
+pointPos = [40, 10]  # genCoords()
+droneVec = [1, 0]  # genVec()
+pointVec = [1, 0] # genVec()
 
 draw(ax)
 
