@@ -104,7 +104,7 @@ def drawPath(ax):
     # bestPath = paths[findPath(paths)]
 
     route = "CSC"
-    bestPath = RSR(droneRight, pointRight, dronePos, pointPos)
+    bestPath = LSL(droneLeft, pointLeft, dronePos, pointPos)
 
     if route == "CSC":
         ax.plot([bestPath[1][0], bestPath[2][0]], [bestPath[1][1], bestPath[2][1]], color='purple', linewidth = 1)
@@ -218,7 +218,7 @@ def LSL(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
-    angle = math.acos(2*TURNRADIUS/D) + math.atan2(V[1],V[0])
+    angle = math.atan2(V[1],V[0]) + PI/2
 
     xdiff = TURNRADIUS * math.cos(angle)
     ydiff = TURNRADIUS * math.sin(angle)
