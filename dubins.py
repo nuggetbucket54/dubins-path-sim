@@ -39,6 +39,7 @@ def nextPoint(event):
 
     draw(ax)
 
+# iterates through all valid routes and finds the shortest (optimal) one
 def findPath(paths):
     shortest = paths[0][0]
     ind = 0
@@ -48,6 +49,7 @@ def findPath(paths):
 
     return ind
 
+# finds optimal route and draws it on matplotlib
 def drawPath(ax):
     # finding focii of circles for drone
     droneAngle = math.atan2(droneVec[1], droneVec[0])
@@ -77,41 +79,33 @@ def drawPath(ax):
     pointLeft = [pointPos[0] + TURNRADIUS * math.cos(pointLeftAngle), pointPos[1] + TURNRADIUS * math.sin(pointLeftAngle)]
     pointRight = [pointPos[0] + TURNRADIUS * math.cos(pointRightAngle), pointPos[1] + TURNRADIUS * math.sin(pointRightAngle)]
 
+
+
+    # absolute distance between drone & waypoint for route optimization
     dist = ((pointPos[0] - dronePos[0])**2 + (pointPos[1] - dronePos[1])**2)**.5
-    
     paths = []
 
+    # CCC paths only work if drone & waypoint within 4 turn-radii
     if (dist < 4 * TURNRADIUS):
-        try:
-            paths.append(RLR(droneRight, pointRight, dronePos, pointPos))
-        except:
-            pass
+        try: paths.append(RLR(droneRight, pointRight, dronePos, pointPos))
+        except: pass
 
-        try:
-            paths.append(LRL(droneLeft, pointLeft, dronePos, pointPos))
-        except:
-            pass
+        try: paths.append(LRL(droneLeft, pointLeft, dronePos, pointPos))
+        except: pass
 
+    # CSC paths only work if drone & waypoint are at least 2 turn-radii apart
     if (dist > 2 * TURNRADIUS):
-        try:
-            paths.append(RSR(droneRight, pointRight, dronePos, pointPos))
-        except:
-            pass
+        try: paths.append(RSR(droneRight, pointRight, dronePos, pointPos))
+        except: pass
 
-        try:
-            paths.append(LSL(droneLeft, pointLeft, dronePos, pointPos))
-        except:
-            pass
+        try: paths.append(LSL(droneLeft, pointLeft, dronePos, pointPos))
+        except: pass
 
-        try:
-            paths.append(RSL(droneRight, pointLeft, dronePos, pointPos))
-        except:
-            pass
+        try: paths.append(RSL(droneRight, pointLeft, dronePos, pointPos))
+        except: pass
 
-        try:
-            paths.append(LSR(droneLeft, pointRight, dronePos, pointPos))
-        except:
-            pass
+        try: paths.append(LSR(droneLeft, pointRight, dronePos, pointPos))
+        except: pass
 
     bestPath = paths[findPath(paths)]
 
@@ -124,37 +118,31 @@ def drawPath(ax):
         ax.add_patch(bestPath[3])
         ax.add_patch(bestPath[4])
 
-    print(f"Drone position: {dronePos}")
-    print(f"Drone heading: {droneVec} \n")
-    print(f"Waypoint position: {pointPos}")
-    print(f"Waypoint heading: {pointVec}")
-    
+    # drone and waypoint positions and orientations if needed:
+    # print(f"Drone position: {dronePos}")
+    # print(f"Drone heading: {droneVec}")
+    # print(f"Waypoint position: {pointPos}")
+    # print(f"Waypoint heading: {pointVec}")
 
-    # listed below are points/lines used for calculations that can be visualized if wanted
-    # ax.plot(droneLeft[0], droneLeft[1], 'bo', label='Point 1')
-    # ax.plot(droneRight[0], droneRight[1], 'bo', label='Point 1')
-    # ax.plot(pointLeft[0], pointLeft[1], 'ro', label='Point 1')
-    # ax.plot(pointRight[0], pointRight[1], 'ro', label='Point 1')
-    # ax.plot(pf1[0], pf1[1], 'bo', label='Point 1')
-    # ax.plot(pf2[0], pf2[1], 'ro', label='Point 2')
-    # ax.add_patch(c1)
-    # ax.add_patch(c2)
-
-# path for right-left-right path
+# path for right-left-right route
 def RLR(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
     angle = math.acos(D/(4 * TURNRADIUS)) + math.atan2(V[1], V[0])
 
+    # focus of third circle in calculations of route
     p3 = [p1[0] + 2 * TURNRADIUS * math.cos(angle), p1[1] + 2 * TURNRADIUS * math.sin(angle)]
 
+    # vectors from circles 1 & 2 to circle 3
     p1p3 = [p3[0] - p1[0], p3[1] - p1[1]]
     p2p3 = [p3[0] - p2[0], p3[1] - p2[1]]
 
+    # tangent points between circles
     pt1 = [p1[0] + (p1p3[0] / 2), p1[1] + (p1p3[1] / 2)]
     pt2 = [p2[0] + (p2p3[0] / 2), p2[1] + (p2p3[1] / 2)]
 
+    # absolute angles of path
     angle1 = math.atan2(dronePos[1] - p1[1], dronePos[0] - p1[0])
     angle2 = math.atan2(pt1[1] - p1[1], pt1[0] - p1[0])
     angle3 = math.atan2(pt1[1] - p3[1], pt1[0] - p3[0])
@@ -162,26 +150,32 @@ def RLR(p1, p2, dronePos, pointPos):
     angle5 = math.atan2(pt2[1] - p2[1], pt2[0] - p2[0])
     angle6 = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
 
+    # arcs that make up path from the above angles
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle2*180/PI, theta2=angle1*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle3*180/PI, theta2=angle4*180/PI, color='purple', linewidth=1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle6*180/PI, theta2=angle5*180/PI, color='purple', linewidth=1)
 
     return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
+# path for left-right-left route
 def LRL(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
     angle = math.acos(D/(4 * TURNRADIUS)) + math.atan2(V[1], V[0])
 
+    # focus of third circle in calculations of route
     p3 = [p1[0] + 2 * TURNRADIUS * math.cos(angle), p1[1] + 2 * TURNRADIUS * math.sin(angle)]
 
+    # vectors from circles 1 & 2 to circle 3
     p1p3 = [p3[0] - p1[0], p3[1] - p1[1]]
     p2p3 = [p3[0] - p2[0], p3[1] - p2[1]]
 
+    # tangent points between circles
     pt1 = [p1[0] + (p1p3[0] / 2), p1[1] + (p1p3[1] / 2)]
     pt2 = [p2[0] + (p2p3[0] / 2), p2[1] + (p2p3[1] / 2)]
 
+    # absolute angles of path
     angle1 = math.atan2(dronePos[1] - p1[1], dronePos[0] - p1[0])
     angle2 = math.atan2(pt1[1] - p1[1], pt1[0] - p1[0])
     angle3 = math.atan2(pt1[1] - p3[1], pt1[0] - p3[0])
@@ -189,13 +183,14 @@ def LRL(p1, p2, dronePos, pointPos):
     angle5 = math.atan2(pt2[1] - p2[1], pt2[0] - p2[0])
     angle6 = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
 
+    # arcs that make up path from the above angles
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle1*180/PI, theta2=angle2*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle4*180/PI, theta2=angle3*180/PI, color='purple', linewidth=1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle5*180/PI, theta2=angle6*180/PI, color='purple', linewidth=1)
 
     return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
-# path for right-straight-right path
+# path for right-straight-right route
 def RSR(p1, p2, dronePos, pointPos):
 
     V = [p2[0] - p1[0], p2[1] - p1[1]]
@@ -217,12 +212,13 @@ def RSR(p1, p2, dronePos, pointPos):
     curveAng2A = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
     curveAng2B = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
+    # curve objects (actually graphed onto matplotlib)
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
     return [(abs(curveAng1A - curveAng1B) + abs(curveAng2B - curveAng2A)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
-# path for left-straight-left path
+# path for left-straight-left route
 def LSL(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
@@ -243,12 +239,13 @@ def LSL(p1, p2, dronePos, pointPos):
     curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
     curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
 
+    # curve objects (actually graphed onto matplotlib)
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
     return [(abs(curveAng1B - curveAng1A) + abs(curveAng2A - curveAng2B)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
-# path for right-straight-left path
+# path for right-straight-left route
 def RSL(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
@@ -269,12 +266,13 @@ def RSL(p1, p2, dronePos, pointPos):
     curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
     curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
 
+    # curve objects (actually graphed onto matplotlib)
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
     return [(abs(curveAng1A - curveAng1B) + abs(curveAng2A - curveAng2B)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
-# path for right-straight-left path
+# path for left-straight-right route
 def LSR(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
@@ -295,12 +293,13 @@ def LSR(p1, p2, dronePos, pointPos):
     curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
     curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
 
+    # curve objects (actually graphed onto matplotlib)
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
     return [(abs(curveAng1B - curveAng1A) + abs(curveAng2B - curveAng2A)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
-# redraws canvas
+# redraws canvas to include new waypoint + vector
 def draw(ax):
     ax.clear()
     ax.set_xlim(0,width)
