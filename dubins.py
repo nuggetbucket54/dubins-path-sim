@@ -79,41 +79,35 @@ def drawPath(ax):
 
     dist = ((pointPos[0] - dronePos[0])**2 + (pointPos[1] - dronePos[1])**2)**.5
     
-    # if (dist < 4 * TURNRADIUS):
-    #     paths = []
-    #     route = "CCC"
+    paths = []
 
-    #     try:
-    #         paths.append(RLR(droneRight, pointRight, dronePos, pointPos))
-    #     except:
-    #         pass
+    if (dist < 4 * TURNRADIUS):
+        try:
+            paths.append(RLR(droneRight, pointRight, dronePos, pointPos))
+        except:
+            pass
 
-    #     try:
-    #         paths.append(LRL(droneLeft, pointLeft, dronePos, pointPos))
-    #     except:
-    #         pass
+        try:
+            paths.append(LRL(droneLeft, pointLeft, dronePos, pointPos))
+        except:
+            pass
 
-    # else:
-    #     paths = [  RSR(droneRight, pointRight, dronePos, pointPos),
-    #                LSL(droneLeft, pointLeft, dronePos, pointPos)  ,
-    #                RSL(droneRight, pointLeft, dronePos, pointPos) ,
-    #                LSR(droneLeft, pointRight, dronePos, pointPos) ,  ]
-        
-    #     route = "CSC"
+    if (dist > 2 * TURNRADIUS):
+        paths.append(RSR(droneRight, pointRight, dronePos, pointPos))
+        paths.append(LSL(droneLeft, pointLeft, dronePos, pointPos))
+        paths.append(RSL(droneRight, pointLeft, dronePos, pointPos))
+        paths.append(LSR(droneLeft, pointRight, dronePos, pointPos))
 
-    # bestPath = paths[findPath(paths)]
+    bestPath = paths[findPath(paths)]
 
-    route = "CSC"
-    bestPath = LSR(droneLeft, pointRight, dronePos, pointPos)
-
-    if route == "CSC":
-        ax.plot([bestPath[1][0], bestPath[2][0]], [bestPath[1][1], bestPath[2][1]], color='purple', linewidth = 1)
-        ax.add_patch(bestPath[3])
+    if bestPath[1] == "CSC":
+        ax.plot([bestPath[2][0], bestPath[3][0]], [bestPath[2][1], bestPath[3][1]], color='purple', linewidth = 1)
         ax.add_patch(bestPath[4])
+        ax.add_patch(bestPath[5])
     else:
-        ax.add_patch(bestPath[1])
         ax.add_patch(bestPath[2])
         ax.add_patch(bestPath[3])
+        ax.add_patch(bestPath[4])
 
     print(f"Drone position: {dronePos}")
     print(f"Drone heading: {droneVec} \n")
@@ -157,7 +151,7 @@ def RLR(p1, p2, dronePos, pointPos):
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle3*180/PI, theta2=angle4*180/PI, color='purple', linewidth=1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle6*180/PI, theta2=angle5*180/PI, color='purple', linewidth=1)
 
-    return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, curve1, curve2, curve3]
+    return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
 def LRL(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
@@ -184,7 +178,7 @@ def LRL(p1, p2, dronePos, pointPos):
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle4*180/PI, theta2=angle3*180/PI, color='purple', linewidth=1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle5*180/PI, theta2=angle6*180/PI, color='purple', linewidth=1)
 
-    return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, curve1, curve2, curve3]
+    return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
 # path for right-straight-right path
 def RSR(p1, p2, dronePos, pointPos):
@@ -211,7 +205,7 @@ def RSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), pf1, pf2, curve1, curve2]
+    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
 
 # path for left-straight-left path
 def LSL(p1, p2, dronePos, pointPos):
@@ -237,7 +231,7 @@ def LSL(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
+    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
 
 # path for right-straight-left path
 def RSL(p1, p2, dronePos, pointPos):
@@ -263,7 +257,7 @@ def RSL(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), pf1, pf2, curve1, curve2]
+    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
 
 # path for right-straight-left path
 def LSR(p1, p2, dronePos, pointPos):
@@ -289,7 +283,7 @@ def LSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), pf1, pf2, curve1, curve2]
+    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
 
 # redraws canvas
 def draw(ax):
