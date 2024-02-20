@@ -93,10 +93,25 @@ def drawPath(ax):
             pass
 
     if (dist > 2 * TURNRADIUS):
-        paths.append(RSR(droneRight, pointRight, dronePos, pointPos))
-        paths.append(LSL(droneLeft, pointLeft, dronePos, pointPos))
-        paths.append(RSL(droneRight, pointLeft, dronePos, pointPos))
-        paths.append(LSR(droneLeft, pointRight, dronePos, pointPos))
+        try:
+            paths.append(RSR(droneRight, pointRight, dronePos, pointPos))
+        except:
+            pass
+
+        try:
+            paths.append(LSL(droneLeft, pointLeft, dronePos, pointPos))
+        except:
+            pass
+
+        try:
+            paths.append(RSL(droneRight, pointLeft, dronePos, pointPos))
+        except:
+            pass
+
+        try:
+            paths.append(LSR(droneLeft, pointRight, dronePos, pointPos))
+        except:
+            pass
 
     bestPath = paths[findPath(paths)]
 
@@ -130,7 +145,7 @@ def RLR(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
-    angle = math.acos(D/(4 * TURNRADIUS)) - math.atan2(V[1], V[0])
+    angle = math.acos(D/(4 * TURNRADIUS)) + math.atan2(V[1], V[0])
 
     p3 = [p1[0] + 2 * TURNRADIUS * math.cos(angle), p1[1] + 2 * TURNRADIUS * math.sin(angle)]
 
@@ -205,7 +220,7 @@ def RSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curveAng1A - curveAng1B) + abs(curveAng2B - curveAng2A)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
 # path for left-straight-left path
 def LSL(p1, p2, dronePos, pointPos):
@@ -231,7 +246,7 @@ def LSL(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curveAng1B - curveAng1A) + abs(curveAng2A - curveAng2B)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
 # path for right-straight-left path
 def RSL(p1, p2, dronePos, pointPos):
@@ -257,7 +272,7 @@ def RSL(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1A - curveAng1B) * TURNRADIUS) + D + abs((curveAng2A - curveAng2B) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curveAng1A - curveAng1B) + abs(curveAng2A - curveAng2B)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
 # path for right-straight-left path
 def LSR(p1, p2, dronePos, pointPos):
@@ -283,7 +298,7 @@ def LSR(p1, p2, dronePos, pointPos):
     curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
     curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
 
-    return [abs((curveAng1B - curveAng1A) * TURNRADIUS) + D + abs((curveAng2B - curveAng2A) * TURNRADIUS), "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curveAng1B - curveAng1A) + abs(curveAng2B - curveAng2A)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
 # redraws canvas
 def draw(ax):
@@ -305,9 +320,9 @@ fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(bottom=0.2)
 
 dronePos = [30, 30] #[81, 52]  # genCoords()
-pointPos = [70, 30] #[67, 24]  # genCoords()
-droneVec = [0, -1] #[0.803550475780302, -0.5952366192307478]
-pointVec = [0, 1] #[0.45255532383054264, 0.8917363281108562]
+pointPos = [45, 30] #[67, 24]  # genCoords()
+droneVec = [-0.803550475780302, 0.5952366192307478]
+pointVec = [0.45255532383054264, 0.8917363281108562]
 
 draw(ax)
 
