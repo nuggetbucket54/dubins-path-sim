@@ -104,7 +104,7 @@ def drawPath(ax):
     # bestPath = paths[findPath(paths)]
 
     route = "CSC"
-    bestPath = LSL(droneLeft, pointLeft, dronePos, pointPos)
+    bestPath = LSR(droneLeft, pointRight, dronePos, pointPos)
 
     if route == "CSC":
         ax.plot([bestPath[1][0], bestPath[2][0]], [bestPath[1][1], bestPath[2][1]], color='purple', linewidth = 1)
@@ -270,18 +270,14 @@ def LSR(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
-    angle = math.acos(2*TURNRADIUS/D) + math.atan2(V[1],V[0])
+    angle = -math.acos(2*TURNRADIUS/D) + math.atan2(V[1],V[0])
 
     xdiff = TURNRADIUS * math.cos(angle)
     ydiff = TURNRADIUS * math.sin(angle)
 
     # tangent points of circles
-    pf1 = [p1[0] - xdiff, p1[1] - ydiff]
-    pf2 = [p2[0] + xdiff, p2[1] + ydiff]
-
-    ax.plot(pf1[0], pf1[1], 'go', label='Point 1')
-    ax.plot(pf2[0], pf2[1], 'go', label='Point 1')
-
+    pf1 = [p1[0] + xdiff, p1[1] + ydiff]
+    pf2 = [p2[0] - xdiff, p2[1] - ydiff]
 
     # angle calculations for drawing curves
     curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
@@ -314,10 +310,10 @@ def draw(ax):
 fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(bottom=0.2)
 
-dronePos = [81, 52]  # genCoords()
-pointPos = [67, 24]  # genCoords()
-droneVec = [0.803550475780302, -0.5952366192307478]
-pointVec = [0.45255532383054264, 0.8917363281108562]
+dronePos = [30, 30] #[81, 52]  # genCoords()
+pointPos = [70, 30] #[67, 24]  # genCoords()
+droneVec = [0, -1] #[0.803550475780302, -0.5952366192307478]
+pointVec = [0, 1] #[0.45255532383054264, 0.8917363281108562]
 
 draw(ax)
 
