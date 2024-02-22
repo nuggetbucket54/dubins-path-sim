@@ -4,15 +4,17 @@ from matplotlib.patches import Arc
 from matplotlib.widgets import Button, CheckButtons
 
 # constants (feel free to play around and change these values)
-width=100
-height=80
-TURNRADIUS = 5
-PI = math.pi
+DISCRETIZE_LABELS   =   ["Discretization: OFF", "Discretization: ON"]
+DISCRETIZE_FLAG     =   False
+PI                  =   math.pi
+WIDTH               =   100
+HEIGHT              =   80
+TURNRADIUS          =   5
 
 # generates two random coordinates representing drone position and waypoint
 # (coordinates generated at least 10 units from edge of plot for easier visualization)
 def genCoords(): 
-    return [random.randint(10, width - 10), random.randint(10, height - 10)]
+    return [random.randint(10, WIDTH - 10), random.randint(10, HEIGHT - 10)]
 
 # generates a vector representing orientation
 def genVec():
@@ -39,7 +41,7 @@ def next_point(event):
 
     draw(ax)
 
-# iterates through all valid routes and finds the shortest (optimal) one
+# iterates through and finds the shortest (optimal) route
 def findPath(paths):
     shortest = paths[0][0]
     ind = 0
@@ -302,8 +304,8 @@ def LSR(p1, p2, drone_pos, point_pos):
 # redraws canvas to include new waypoint + vector
 def draw(ax):
     ax.clear()
-    ax.set_xlim(0,width)
-    ax.set_ylim(0,height)
+    ax.set_xlim(0, WIDTH)
+    ax.set_ylim(0, HEIGHT)
     ax.set_aspect('equal', adjustable='box')
     ax.set_title('Dubins path sim')
 
@@ -314,9 +316,17 @@ def draw(ax):
     plt.draw()
     drawPath(ax)
 
+# toggles discretization
+def discretize_callback(event):
+    global DISCRETIZE_FLAG
+    DISCRETIZE_FLAG = not DISCRETIZE_FLAG
+
+    discretize_button.label.set_text(DISCRETIZE_LABELS[DISCRETIZE_FLAG])
+    plt.draw()
+
 # plot settings
 fig, ax = plt.subplots(figsize=(6,6))
-plt.subplots_adjust(bottom=0.2)
+plt.subplots_adjust(bottom=0.3)
 
 drone_pos = genCoords()
 point_pos = genCoords()
@@ -326,9 +336,14 @@ point_vec = genVec()
 draw(ax)
 
 # button for next waypoint
-button_ax = plt.axes([0.05, 0.05, 0.9, 0.08])
-waypoint_button = Button(button_ax, 'Generate next waypoint')
+waypoint_ax = plt.axes([0.05, 0.15, 0.9, 0.08])
+waypoint_button = Button(waypoint_ax, 'Generate next waypoint')
 waypoint_button.on_clicked(next_point)
+
+
+discretize_ax = plt.axes([0.05, 0.05, 0.9, 0.08])
+discretize_button = Button(discretize_ax, DISCRETIZE_LABELS[0])
+discretize_button.on_clicked(discretize_callback)
 
 # Display the plot
 plt.show()
