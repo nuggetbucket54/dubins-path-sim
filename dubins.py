@@ -4,9 +4,11 @@ from matplotlib.patches import Arc
 from matplotlib.widgets import Button, Slider
 
 # constants (feel free to play around and change these values)
+# color names for matplotlib: https://matplotlib.org/stable/gallery/color/named_colors.html
 DISCRETIZE_LABELS   =   ["Discretization: OFF", "Discretization: ON"]
 DISCRETIZE_COLORS   =   ["lightpink", "palegreen"]
 DISCRETIZE_FLAG     =   False
+INCREMENTS          =   10
 PI                  =   math.pi
 WIDTH               =   100
 HEIGHT              =   80
@@ -14,11 +16,11 @@ TURNRADIUS          =   5
 
 # generates two random coordinates representing drone position and waypoint
 # (coordinates generated at least 10 units from edge of plot for easier visualization)
-def genCoords(): 
+def gen_coords(): 
     return [random.randint(10, WIDTH - 10), random.randint(10, HEIGHT - 10)]
 
 # generates a vector representing orientation
-def genVec():
+def gen_vec():
     x1 = random.uniform(-1, 1)
 
     # generate y component from x component
@@ -37,13 +39,13 @@ def next_point(event):
     drone_pos = point_pos
     drone_vec = point_vec
 
-    point_pos = genCoords()
-    point_vec = genVec()
+    point_pos = gen_coords()
+    point_vec = gen_vec()
 
     draw(ax)
 
 # iterates through and finds the shortest (optimal) route
-def findPath(paths):
+def find_path(paths):
     shortest = paths[0][0]
     ind = 0
     for i in range(len(paths)):
@@ -53,7 +55,7 @@ def findPath(paths):
     return ind
 
 # finds optimal route and draws it on matplotlib
-def drawPath(ax):
+def draw_path(ax):
     # finding focii of circles for drone
     drone_angle = math.atan2(drone_vec[1], drone_vec[0])
     drone_left_angle = drone_angle + PI/2
@@ -108,10 +110,22 @@ def drawPath(ax):
         try: paths.append(LSR(drone_left, point_right, drone_pos, point_pos))
         except: pass
 
-    best_path = paths[findPath(paths)]
+    best_path = paths[find_path(paths)]
+
+    if not DISCRETIZE_FLAG:
+        line_draw(best_path)
 
     # print(best_path[4].theta1)
 
+
+
+    # drone and waypoint positions and orientations if needed:
+    # print(f"Drone position: {drone_pos}")
+    # print(f"Drone heading: {drone_vec}")
+    # print(f"Waypoint position: {point_pos}")
+    # print(f"Waypoint heading: {point_vec}")
+
+def line_draw(best_path):
     if best_path[1] == "CSC":
         ax.plot([best_path[2][0], best_path[3][0]], [best_path[2][1], best_path[3][1]], color='purple', linewidth = 1)
         ax.add_patch(best_path[4])
@@ -121,11 +135,8 @@ def drawPath(ax):
         ax.add_patch(best_path[3])
         ax.add_patch(best_path[4])
 
-    # drone and waypoint positions and orientations if needed:
-    # print(f"Drone position: {drone_pos}")
-    # print(f"Drone heading: {drone_vec}")
-    # print(f"Waypoint position: {point_pos}")
-    # print(f"Waypoint heading: {point_vec}")
+def dot_draw(best_path):
+    return
 
 # path for right-left-right route
 def RLR(p1, p2, drone_pos, point_pos):
@@ -315,7 +326,7 @@ def draw(ax):
     ax.quiver(drone_pos[0], drone_pos[1], drone_vec[0], drone_vec[1], color='blue')
     ax.quiver(point_pos[0], point_pos[1], point_vec[0], point_vec[1], color='red')
     plt.draw()
-    drawPath(ax)
+    draw_path(ax)
 
 # toggles discretization
 def discretize_callback(event):
@@ -326,16 +337,20 @@ def discretize_callback(event):
     discretize_button.color = DISCRETIZE_COLORS[DISCRETIZE_FLAG]
     plt.draw()
 
+def slider_update(val):
+    global INCREMENTS
+    INCREMENTS = int(val)
+
 # plot settings
 fig, ax = plt.subplots(figsize=(6,6))
 ax.set_axisbelow(True)
 plt.subplots_adjust(bottom=0.35)
 # plt.style.use('fivethirtyeight')
 
-drone_pos = genCoords()
-point_pos = genCoords()
-drone_vec = genVec()
-point_vec = genVec()
+drone_pos = gen_coords()
+point_pos = gen_coords()
+drone_vec = gen_vec()
+point_vec = gen_vec()
 
 draw(ax)
 
@@ -350,6 +365,7 @@ discretize_button.on_clicked(discretize_callback)
 
 slider_ax = plt.axes([0.05, 0.04, 0.85, 0.04])
 slider = Slider(slider_ax, "", 5, 20, valinit=10, valfmt="%i")
+slider.on_changed(slider_update)
 
 # Display the plot
 plt.show()
