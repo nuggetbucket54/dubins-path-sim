@@ -1,10 +1,11 @@
 import random, math
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc
-from matplotlib.widgets import Button, CheckButtons
+from matplotlib.widgets import Button, Slider
 
 # constants (feel free to play around and change these values)
 DISCRETIZE_LABELS   =   ["Discretization: OFF", "Discretization: ON"]
+DISCRETIZE_COLORS   =   ["lightpink", "palegreen"]
 DISCRETIZE_FLAG     =   False
 PI                  =   math.pi
 WIDTH               =   100
@@ -322,11 +323,14 @@ def discretize_callback(event):
     DISCRETIZE_FLAG = not DISCRETIZE_FLAG
 
     discretize_button.label.set_text(DISCRETIZE_LABELS[DISCRETIZE_FLAG])
+    discretize_button.color = DISCRETIZE_COLORS[DISCRETIZE_FLAG]
     plt.draw()
 
 # plot settings
 fig, ax = plt.subplots(figsize=(6,6))
-plt.subplots_adjust(bottom=0.3)
+ax.set_axisbelow(True)
+plt.subplots_adjust(bottom=0.35)
+# plt.style.use('fivethirtyeight')
 
 drone_pos = genCoords()
 point_pos = genCoords()
@@ -336,14 +340,16 @@ point_vec = genVec()
 draw(ax)
 
 # button for next waypoint
-waypoint_ax = plt.axes([0.05, 0.15, 0.9, 0.08])
-waypoint_button = Button(waypoint_ax, 'Generate next waypoint')
+waypoint_ax = plt.axes([0.05, 0.20, 0.9, 0.08])
+waypoint_button = Button(waypoint_ax, 'Generate next waypoint', color="lightcyan")
 waypoint_button.on_clicked(next_point)
 
-
-discretize_ax = plt.axes([0.05, 0.05, 0.9, 0.08])
-discretize_button = Button(discretize_ax, DISCRETIZE_LABELS[0])
+discretize_ax = plt.axes([0.05, 0.10, 0.9, 0.08])
+discretize_button = Button(discretize_ax, DISCRETIZE_LABELS[0], color=DISCRETIZE_COLORS[0])
 discretize_button.on_clicked(discretize_callback)
+
+slider_ax = plt.axes([0.05, 0.04, 0.85, 0.04])
+slider = Slider(slider_ax, "", 5, 20, valinit=10, valfmt="%i")
 
 # Display the plot
 plt.show()
