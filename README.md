@@ -21,4 +21,5 @@ Randomly generates a theoretical drone/waypoint position/orientation and calcula
 
 
 ## The math involved (only look at it if you really want to)
-![](/math.png)
+![math](https://github.com/nuggetbucket54/dubins-path-sim/assets/55860775/4179f301-8559-4ab7-ad4d-7a613d1ff790)
+
