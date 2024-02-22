@@ -12,20 +12,20 @@ PI = math.pi
 # generates two random coordinates representing drone position and waypoint
 # (coordinates generated at least 10 units from edge of plot for easier visualization)
 def genCoords(): 
-    return [random.randint(10,width-10),random.randint(10,height-10)]
+    return [random.randint(10, width - 10), random.randint(10, height - 10)]
 
 # generates a vector representing orientation
 def genVec():
-    x1 = random.uniform(-1,1)
+    x1 = random.uniform(-1, 1)
 
     # generate y component from x component
-    y1 = (1-x1**2)**.5
+    y1 = (1 - x1**2)**.5
 
     # determine positive/negative y component
-    if (random.randint(0,1)%2):
+    if (random.randint(0, 1) % 2):
         y1 *= -1
 
-    return [x1,y1]
+    return [x1, y1]
 
 # generates the next waypoint
 def nextPoint(event):
@@ -151,9 +151,9 @@ def RLR(p1, p2, dronePos, pointPos):
     angle6 = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
 
     # arcs that make up path from the above angles
-    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle2*180/PI, theta2=angle1*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle3*180/PI, theta2=angle4*180/PI, color='purple', linewidth=1)
-    curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle6*180/PI, theta2=angle5*180/PI, color='purple', linewidth=1)
+    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle2*180/PI, theta2 = angle1*180/PI, color = 'purple', linewidth = 1)
+    curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle3*180/PI, theta2 = angle4*180/PI, color = 'purple', linewidth = 1)
+    curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle6*180/PI, theta2 = angle5*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
@@ -184,9 +184,9 @@ def LRL(p1, p2, dronePos, pointPos):
     angle6 = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
 
     # arcs that make up path from the above angles
-    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle1*180/PI, theta2=angle2*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle4*180/PI, theta2=angle3*180/PI, color='purple', linewidth=1)
-    curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=angle5*180/PI, theta2=angle6*180/PI, color='purple', linewidth=1)
+    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle1*180/PI, theta2 = angle2*180/PI, color = 'purple', linewidth = 1)
+    curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle4*180/PI, theta2 = angle3*180/PI, color = 'purple', linewidth = 1)
+    curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle5*180/PI, theta2 = angle6*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
@@ -196,7 +196,7 @@ def RSR(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
-    angle = math.atan2(V[1],V[0]) + PI/2
+    angle = math.atan2(V[1], V[0]) + PI/2
 
     xdiff = TURNRADIUS * math.cos(angle)
     ydiff = TURNRADIUS * math.sin(angle)
@@ -213,8 +213,8 @@ def RSR(p1, p2, dronePos, pointPos):
     curveAng2B = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
     # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
+    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng1B*180/PI, theta2 = curveAng1A*180/PI, color = 'purple', linewidth = 1)
+    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng2A*180/PI, theta2 = curveAng2B*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(curveAng1A - curveAng1B) + abs(curveAng2B - curveAng2A)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
@@ -223,7 +223,7 @@ def LSL(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
-    angle = math.atan2(V[1],V[0]) + PI/2
+    angle = math.atan2(V[1], V[0]) + PI/2
 
     xdiff = TURNRADIUS * math.cos(angle)
     ydiff = TURNRADIUS * math.sin(angle)
@@ -233,15 +233,15 @@ def LSL(p1, p2, dronePos, pointPos):
     pf2 = [p2[0] - xdiff, p2[1] - ydiff]
 
     # angle calculations for drawing curves
-    curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
-    curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
+    curveAng1A = math.atan2(dronePos[1] - p1[1], dronePos[0] - p1[0])
+    curveAng1B = math.atan2(pf1[1] - p1[1], pf1[0] - p1[0])
 
-    curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
-    curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
+    curveAng2A = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
+    curveAng2B = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
     # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
+    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng1A*180/PI, theta2 = curveAng1B*180/PI, color = 'purple', linewidth = 1)
+    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng2B*180/PI, theta2 = curveAng2A*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(curveAng1B - curveAng1A) + abs(curveAng2A - curveAng2B)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
@@ -250,7 +250,7 @@ def RSL(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
-    angle = math.acos(2*TURNRADIUS/D) + math.atan2(V[1],V[0])
+    angle = math.acos(2*TURNRADIUS/D) + math.atan2(V[1], V[0])
 
     xdiff = TURNRADIUS * math.cos(angle)
     ydiff = TURNRADIUS * math.sin(angle)
@@ -260,15 +260,15 @@ def RSL(p1, p2, dronePos, pointPos):
     pf2 = [p2[0] - xdiff, p2[1] - ydiff]
 
     # angle calculations for drawing curves
-    curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
-    curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
+    curveAng1A = math.atan2(dronePos[1] - p1[1], dronePos[0] - p1[0])
+    curveAng1B = math.atan2(pf1[1] - p1[1], pf1[0] - p1[0])
 
-    curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
-    curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
+    curveAng2A = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
+    curveAng2B = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
     # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1B*180/PI, theta2=curveAng1A*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2B*180/PI, theta2=curveAng2A*180/PI, color='purple', linewidth=1)
+    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng1B*180/PI, theta2 = curveAng1A*180/PI, color = 'purple', linewidth = 1)
+    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng2B*180/PI, theta2 = curveAng2A*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(curveAng1A - curveAng1B) + abs(curveAng2A - curveAng2B)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
@@ -277,7 +277,7 @@ def LSR(p1, p2, dronePos, pointPos):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
-    angle = -math.acos(2*TURNRADIUS/D) + math.atan2(V[1],V[0])
+    angle = -math.acos(2*TURNRADIUS/D) + math.atan2(V[1], V[0])
 
     xdiff = TURNRADIUS * math.cos(angle)
     ydiff = TURNRADIUS * math.sin(angle)
@@ -287,15 +287,15 @@ def LSR(p1, p2, dronePos, pointPos):
     pf2 = [p2[0] - xdiff, p2[1] - ydiff]
 
     # angle calculations for drawing curves
-    curveAng1A = math.atan2(dronePos[1]-p1[1], dronePos[0]-p1[0])
-    curveAng1B = math.atan2(pf1[1]-p1[1], pf1[0]-p1[0])
+    curveAng1A = math.atan2(dronePos[1] - p1[1], dronePos[0] - p1[0])
+    curveAng1B = math.atan2(pf1[1] - p1[1], pf1[0] - p1[0])
 
-    curveAng2A = math.atan2(pointPos[1]-p2[1], pointPos[0]-p2[0])
-    curveAng2B = math.atan2(pf2[1]-p2[1], pf2[0]-p2[0])
+    curveAng2A = math.atan2(pointPos[1] - p2[1], pointPos[0] - p2[0])
+    curveAng2B = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
     # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0],p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng1A*180/PI, theta2=curveAng1B*180/PI, color='purple', linewidth=1)
-    curve2 = Arc((p2[0],p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1=curveAng2A*180/PI, theta2=curveAng2B*180/PI, color='purple', linewidth=1)
+    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng1A*180/PI, theta2 = curveAng1B*180/PI, color = 'purple', linewidth = 1)
+    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curveAng2A*180/PI, theta2 = curveAng2B*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(curveAng1B - curveAng1A) + abs(curveAng2B - curveAng2A)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
 
@@ -318,10 +318,10 @@ def draw(ax):
 fig, ax = plt.subplots(figsize=(6,6))
 plt.subplots_adjust(bottom=0.2)
 
-dronePos = [30, 30] #[81, 52]  # genCoords()
-pointPos = [45, 30] #[67, 24]  # genCoords()
-droneVec = [-0.803550475780302, 0.5952366192307478]
-pointVec = [0.45255532383054264, 0.8917363281108562]
+dronePos = genCoords()
+pointPos = genCoords()
+droneVec = genVec()
+pointVec = genVec()
 
 draw(ax)
 
