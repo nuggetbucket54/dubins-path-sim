@@ -1,5 +1,6 @@
 import random, math
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.patches import Arc
 from matplotlib.widgets import Button, Slider
 
@@ -45,7 +46,7 @@ def next_point(event):
     draw(ax)
 
 # iterates through and finds the shortest (optimal) route
-def find_path(paths):
+def find_best(paths):
     shortest = paths[0][0]
     ind = 0
     for i in range(len(paths)):
@@ -54,8 +55,8 @@ def find_path(paths):
 
     return ind
 
-# finds optimal route and draws it on matplotlib
-def draw_path(ax):
+# finds optimal route
+def find_path(ax):
     # finding focii of circles for drone
     drone_angle = math.atan2(drone_vec[1], drone_vec[0])
     drone_left_angle = drone_angle + PI/2
@@ -110,11 +111,12 @@ def draw_path(ax):
         try: paths.append(LSR(drone_left, point_right, drone_pos, point_pos))
         except: pass
 
-    best_path = paths[find_path(paths)]
+    best_path = paths[find_best(paths)]
 
     if not DISCRETIZE_FLAG:
         line_draw(best_path)
-
+    else:
+        dot_draw(best_path)
     # print(best_path[4].theta1)
 
 
@@ -127,16 +129,34 @@ def draw_path(ax):
 
 def line_draw(best_path):
     if best_path[1] == "CSC":
-        ax.plot([best_path[2][0], best_path[3][0]], [best_path[2][1], best_path[3][1]], color='purple', linewidth = 1)
-        ax.add_patch(best_path[4])
-        ax.add_patch(best_path[5])
+        ax.plot([best_path[4][0], best_path[5][0]], [best_path[4][1], best_path[5][1]], color='purple', linewidth = 1)
+        ax.add_patch(best_path[2])
+        ax.add_patch(best_path[3])
     else:
         ax.add_patch(best_path[2])
         ax.add_patch(best_path[3])
         ax.add_patch(best_path[4])
 
-def dot_draw(best_path):
-    return
+def dot_draw(path):
+    # return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
+    
+    points = []
+
+    if path[1] == "CSC":
+        angle_1A = path[2].theta1
+        angle_1B = path[2].theta2
+
+        angle_increment_A = (angle_1B - angle_1A) / INCREMENTS
+
+        for i in range(INCREMENTS + 1):
+            print(angle_1A + angle_increment_A * i)
+            temp_x1 = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_A * i)
+            temp_y1 = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_A * i)
+
+            ax.plot(temp_x1, temp_y1, 'bo', marker='.')
+            points.append([temp_x1, temp_y1])
+        
+
 
 # path for right-left-right route
 def RLR(p1, p2, drone_pos, point_pos):
@@ -230,7 +250,7 @@ def RSR(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for left-straight-left route
 def LSL(p1, p2, drone_pos, point_pos):
@@ -257,7 +277,7 @@ def LSL(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for right-straight-left route
 def RSL(p1, p2, drone_pos, point_pos):
@@ -284,7 +304,7 @@ def RSL(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for left-straight-right route
 def LSR(p1, p2, drone_pos, point_pos):
@@ -311,7 +331,7 @@ def LSR(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", pf1, pf2, curve1, curve2]
+    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # redraws canvas to include new waypoint + vector
 def draw(ax):
@@ -326,7 +346,7 @@ def draw(ax):
     ax.quiver(drone_pos[0], drone_pos[1], drone_vec[0], drone_vec[1], color='blue')
     ax.quiver(point_pos[0], point_pos[1], point_vec[0], point_vec[1], color='red')
     plt.draw()
-    draw_path(ax)
+    find_path(ax)
 
 # toggles discretization
 def discretize_callback(event):
@@ -335,17 +355,20 @@ def discretize_callback(event):
 
     discretize_button.label.set_text(DISCRETIZE_LABELS[DISCRETIZE_FLAG])
     discretize_button.color = DISCRETIZE_COLORS[DISCRETIZE_FLAG]
-    plt.draw()
+    draw(ax)
 
+# adjusts number of discrete points
 def slider_update(val):
     global INCREMENTS
     INCREMENTS = int(val)
+
+    if DISCRETIZE_FLAG:
+        draw(ax)
 
 # plot settings
 fig, ax = plt.subplots(figsize=(6,6))
 ax.set_axisbelow(True)
 plt.subplots_adjust(bottom=0.35)
-# plt.style.use('fivethirtyeight')
 
 drone_pos = gen_coords()
 point_pos = gen_coords()
