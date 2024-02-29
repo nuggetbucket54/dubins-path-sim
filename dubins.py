@@ -117,9 +117,6 @@ def find_path(ax):
         line_draw(best_path)
     else:
         dot_draw(best_path)
-    # print(best_path[4].theta1)
-
-
 
     # drone and waypoint positions and orientations if needed:
     # print(f"Drone position: {drone_pos}")
@@ -127,6 +124,7 @@ def find_path(ax):
     # print(f"Waypoint position: {point_pos}")
     # print(f"Waypoint heading: {point_vec}")
 
+# draws the path as a line
 def line_draw(path):
     if path[1][1] == "S":
         ax.plot([path[4][0], path[5][0]], [path[4][1], path[5][1]], color='purple', linewidth = 1)
@@ -141,40 +139,29 @@ def dot_draw(path):
     # return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
     
     points = []
-
-    if path[1][1] == "S":
         
-        angle_1A = path[2].theta1 * PI / 180
-        angle_1B = path[2].theta2 * PI / 180
-        
-        if angle_1A < 0:
-            angle_1A += 2 * PI
-        
-        if angle_1B < 0:
-            angle_1B += 2 * PI
+    angle_1A = path[2].theta1 * PI / 180
+    angle_1B = path[2].theta2 * PI / 180
 
-        # angle_1A = min(angle_1A, angle_1B)
-        # angle_1B = max(angle_1A, angle_1B)
+    if angle_1A < 0: 
+        angle_1A += 2 * PI
+    if angle_1B < 0:
+        angle_1B += 2 * PI
 
-        # if abs(angle_1B - angle_1A) < PI:
-        #     angle_1A, angle_1B = angle_1B, angle_1A
+    angle_increment_A = (angle_1B - angle_1A) / INCREMENTS
+    
+    print(angle_1A)
+    print(angle_1B)
+    print(angle_increment_A)
+    print('\n')
 
-        
+    for i in range(INCREMENTS):
+        # print(angle_1A + angle_increment_A * i)
+        temp_x1 = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_A * i)
+        temp_y1 = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_A * i)
 
-        angle_increment_A = (angle_1B - angle_1A) / INCREMENTS
-
-        print(angle_1A)
-        print(angle_1B)
-        print(angle_increment_A)
-        print('\n')
-
-        for i in range(INCREMENTS):
-            # print(angle_1A + angle_increment_A * i)
-            temp_x1 = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_A * i)
-            temp_y1 = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_A * i)
-
-            ax.plot(temp_x1, temp_y1, color='purple', marker='.')
-            points.append([temp_x1, temp_y1])
+        ax.plot(temp_x1, temp_y1, color='purple', marker='.')
+        points.append([temp_x1, temp_y1])
 
 
 
