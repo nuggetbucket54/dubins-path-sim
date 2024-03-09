@@ -9,7 +9,7 @@ from matplotlib.widgets import Button, Slider
 DISCRETIZE_LABELS   =   ["Discretization: OFF", "Discretization: ON"]
 DISCRETIZE_COLORS   =   ["lightpink", "palegreen"]
 DISCRETIZE_FLAG     =   False
-INCREMENTS          =   10
+INCREMENTS          =   8
 PI                  =   math.pi
 WIDTH               =   100
 HEIGHT              =   80
@@ -135,20 +135,27 @@ def line_draw(path):
         ax.add_patch(path[3])
         ax.add_patch(path[4])
 
+# helper function to find appropriate increments
+def increments(angle):
+    return int(angle * 180 / PI // 30) + 1 # one point every 20 degrees
+
 # draws the path as a series of discretized points
 def dot_draw(path):
     # array of points for drone
     points = []
 
-    if path[1] == "CSC":        
+    if path[1] == "CSC":
         # start/end angles for drone arc
         angle_1A = path[2].theta1 * PI / 180
         angle_1B = path[2].theta2 * PI / 180
 
-        angle_increment_1 = ((angle_1B - angle_1A) % (2*PI)) / INCREMENTS
+
+        angle_1 = ((angle_1B - angle_1A) % (2*PI))
+        INCREMENT_A = increments(angle_1)
+        angle_increment_1 = angle_1 / INCREMENT_A
 
         # discretizing points for drone arc
-        for i in range(INCREMENTS):
+        for i in range(INCREMENT_A + 1):
             temp_x = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_1 * i)
             temp_y = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_1 * i)
 
@@ -159,10 +166,12 @@ def dot_draw(path):
         angle_2A = path[3].theta1 * PI / 180
         angle_2B = path[3].theta2 * PI / 180
 
-        angle_increment_2 = ((angle_2B - angle_2A) % (2*PI)) / INCREMENTS
+        angle_2 = (angle_2B - angle_2A) % (2*PI)
+        INCREMENT_B = increments(angle_2)
+        angle_increment_2 = angle_2 / INCREMENT_B
 
         # discretizing points for waypoint arc
-        for i in range(INCREMENTS):
+        for i in range(INCREMENT_B + 1):
             temp_x = path[7][0] + TURNRADIUS * math.cos(angle_2A + angle_increment_2 * i)
             temp_y = path[7][1] + TURNRADIUS * math.sin(angle_2A + angle_increment_2 * i)
 
@@ -184,10 +193,12 @@ def dot_draw(path):
         angle_1A = path[2].theta1 * PI / 180
         angle_1B = path[2].theta2 * PI / 180
 
-        angle_increment_1 = ((angle_1B - angle_1A) % (2*PI)) / INCREMENTS
+        angle_1 = ((angle_1B - angle_1A) % (2*PI))
+        INCREMENT_A = increments(angle_1)
+        angle_increment_1 = angle_1 / INCREMENT_A
 
         # discretizing points for arc 1
-        for i in range(INCREMENTS):
+        for i in range(INCREMENT_A + 1):
             temp_x = path[5][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_1 * i)
             temp_y = path[5][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_1 * i)
 
@@ -198,10 +209,12 @@ def dot_draw(path):
         angle_2A = path[3].theta1 * PI / 180
         angle_2B = path[3].theta2 * PI / 180
 
-        angle_increment_2 = ((angle_2B - angle_2A) % (2*PI)) / INCREMENTS
+        angle_2 = (angle_2B - angle_2A) % (2*PI)
+        INCREMENT_B = increments(angle_2)
+        angle_increment_2 = angle_2 / INCREMENT_B
 
         # discretizing points for arc 2
-        for i in range(INCREMENTS):
+        for i in range(INCREMENT_B + 1):
             temp_x = path[7][0] + TURNRADIUS * math.cos(angle_2A + angle_increment_2 * i)
             temp_y = path[7][1] + TURNRADIUS * math.sin(angle_2A + angle_increment_2 * i)
 
@@ -212,10 +225,12 @@ def dot_draw(path):
         angle_3A = path[4].theta1 * PI / 180
         angle_3B = path[4].theta2 * PI / 180
 
-        angle_increment_3 = ((angle_3B - angle_3A) % (2*PI)) / INCREMENTS
+        angle_3 = (angle_3B - angle_3A) % (2*PI)
+        INCREMENT_C = increments(angle_3)
+        angle_increment_3 = angle_3 / INCREMENT_C
 
         # discretizing points for arc 3
-        for i in range(INCREMENTS):
+        for i in range(INCREMENT_C + 1):
             temp_x = path[6][0] + TURNRADIUS * math.cos(angle_3A + angle_increment_3 * i)
             temp_y = path[6][1] + TURNRADIUS * math.sin(angle_3A + angle_increment_3 * i)
 
@@ -423,12 +438,14 @@ def discretize_callback(event):
     discretize_button.color = DISCRETIZE_COLORS[DISCRETIZE_FLAG]
     draw(ax)
 
-# adjusts number of discrete points
+# adjusts turn radius
 def slider_update(val):
-    global INCREMENTS
-    INCREMENTS = int(val)
+    global TURNRADIUS
+    initial = TURNRADIUS
 
-    if DISCRETIZE_FLAG:
+    TURNRADIUS = int(val)
+
+    if initial != TURNRADIUS:
         draw(ax)
 
 # plot settings
@@ -453,7 +470,7 @@ discretize_button = Button(discretize_ax, DISCRETIZE_LABELS[0], color=DISCRETIZE
 discretize_button.on_clicked(discretize_callback)
 
 slider_ax = plt.axes([0.05, 0.04, 0.85, 0.04])
-slider = Slider(slider_ax, "", 2, 20, valinit=5, valfmt="%i")
+slider = Slider(slider_ax, "", 1, 10, valinit=5, valfmt="%i")
 slider.on_changed(slider_update)
 
 # Display the plot
