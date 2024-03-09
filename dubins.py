@@ -135,6 +135,7 @@ def line_draw(path):
         ax.add_patch(path[3])
         ax.add_patch(path[4])
 
+# draws the path as a series of discretized points
 def dot_draw(path):
     # array of points for drone
     points = []
@@ -222,7 +223,6 @@ def dot_draw(path):
             points.append([temp_x, temp_y])
 
     return points
-
 
 # path for right-left-right route
 def RLR(p1, p2, drone_pos, point_pos):
