@@ -137,23 +137,14 @@ def line_draw(path):
 
 def dot_draw(path):
     # return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
-    
+
     points = []
         
     angle_1A = path[2].theta1 * PI / 180
     angle_1B = path[2].theta2 * PI / 180
 
-    if angle_1A < 0: 
-        angle_1A += 2 * PI
-    if angle_1B < 0:
-        angle_1B += 2 * PI
-
-    angle_increment_A = (angle_1B - angle_1A) / INCREMENTS
+    angle_increment_A = ((angle_1B - angle_1A) % (2*PI)) / INCREMENTS
     
-    print(angle_1A)
-    print(angle_1B)
-    print(angle_increment_A)
-    print('\n')
 
     for i in range(INCREMENTS):
         # print(angle_1A + angle_increment_A * i)
@@ -196,7 +187,7 @@ def RLR(p1, p2, drone_pos, point_pos):
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle3*180/PI, theta2 = angle4*180/PI, color = 'purple', linewidth = 1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle6*180/PI, theta2 = angle5*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, "RLR", curve1, curve2, curve3]
+    return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
 # path for left-right-left route
 def LRL(p1, p2, drone_pos, point_pos):
@@ -229,7 +220,7 @@ def LRL(p1, p2, drone_pos, point_pos):
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle4*180/PI, theta2 = angle3*180/PI, color = 'purple', linewidth = 1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle5*180/PI, theta2 = angle6*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, "LRL", curve1, curve2, curve3]
+    return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, "CCC", curve1, curve2, curve3]
 
 # path for right-straight-right route
 def RSR(p1, p2, drone_pos, point_pos):
@@ -257,7 +248,7 @@ def RSR(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "RSR", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for left-straight-left route
 def LSL(p1, p2, drone_pos, point_pos):
@@ -284,7 +275,7 @@ def LSL(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "LSL", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for right-straight-left route
 def RSL(p1, p2, drone_pos, point_pos):
@@ -311,7 +302,7 @@ def RSL(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "RSL", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for left-straight-right route
 def LSR(p1, p2, drone_pos, point_pos):
@@ -338,7 +329,7 @@ def LSR(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "LSR", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # redraws canvas to include new waypoint + vector
 def draw(ax):
