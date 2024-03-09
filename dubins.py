@@ -126,7 +126,7 @@ def find_path(ax):
 
 # draws the path as a line
 def line_draw(path):
-    if path[1][1] == "S":
+    if path[1] == "CSC":
         ax.plot([path[4][0], path[5][0]], [path[4][1], path[5][1]], color='purple', linewidth = 1)
         ax.add_patch(path[2])
         ax.add_patch(path[3])
@@ -136,23 +136,49 @@ def line_draw(path):
         ax.add_patch(path[4])
 
 def dot_draw(path):
-    # return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
-
+    # array of points for drone
     points = []
-        
-    angle_1A = path[2].theta1 * PI / 180
-    angle_1B = path[2].theta2 * PI / 180
 
-    angle_increment_A = ((angle_1B - angle_1A) % (2*PI)) / INCREMENTS
-    
+    if path[1] == "CSC":        
+        # start/end angles for drone arc
+        angle_1A = path[2].theta1 * PI / 180
+        angle_1B = path[2].theta2 * PI / 180
 
-    for i in range(INCREMENTS):
-        # print(angle_1A + angle_increment_A * i)
-        temp_x1 = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_A * i)
-        temp_y1 = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_A * i)
+        angle_increment_1 = ((angle_1B - angle_1A) % (2*PI)) / INCREMENTS
 
-        ax.plot(temp_x1, temp_y1, color='purple', marker='.')
-        points.append([temp_x1, temp_y1])
+        # discretizing points for drone arc
+        for i in range(INCREMENTS):
+            temp_x1 = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_1 * i)
+            temp_y1 = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_1 * i)
+
+            ax.plot(temp_x1, temp_y1, color='purple', marker='.')
+            points.append([temp_x1, temp_y1])
+
+        # start/end angles for waypoint arc
+        angle_2A = path[3].theta1 * PI / 180
+        angle_2B = path[3].theta2 * PI / 180
+
+        angle_increment_2 = ((angle_2B - angle_2A) % (2*PI)) / INCREMENTS
+
+        # discretizing points for waypoint arc
+        for i in range(INCREMENTS):
+            temp_x1 = path[7][0] + TURNRADIUS * math.cos(angle_2A + angle_increment_2 * i)
+            temp_y1 = path[7][1] + TURNRADIUS * math.sin(angle_2A + angle_increment_2 * i)
+
+            ax.plot(temp_x1, temp_y1, color='purple', marker='.')
+            points.append([temp_x1, temp_y1])
+
+        x_increment = (path[5][0] - path[4][0]) / INCREMENTS
+        y_increment = (path[5][1] - path[4][1]) / INCREMENTS
+
+        # discretizing straight segment (not returned, solely for visualization)
+        for i in range(INCREMENTS):
+            temp_x1 = path[4][0] + (x_increment * i)
+            temp_y1 = path[4][1] + (y_increment * i)
+
+            print(temp_x1, temp_y1)
+
+            ax.plot(temp_x1, temp_y1, color='purple', marker='.')
 
 
 
