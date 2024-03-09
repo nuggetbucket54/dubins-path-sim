@@ -117,9 +117,6 @@ def find_path(ax):
         line_draw(best_path)
     else:
         dot_draw(best_path)
-    # print(best_path[4].theta1)
-
-
 
     # drone and waypoint positions and orientations if needed:
     # print(f"Drone position: {drone_pos}")
@@ -127,8 +124,9 @@ def find_path(ax):
     # print(f"Waypoint position: {point_pos}")
     # print(f"Waypoint heading: {point_vec}")
 
+# draws the path as a line
 def line_draw(path):
-    if path[1][1] == "S":
+    if path[1] == "CSC":
         ax.plot([path[4][0], path[5][0]], [path[4][1], path[5][1]], color='purple', linewidth = 1)
         ax.add_patch(path[2])
         ax.add_patch(path[3])
@@ -137,46 +135,94 @@ def line_draw(path):
         ax.add_patch(path[3])
         ax.add_patch(path[4])
 
+# draws the path as a series of discretized points
 def dot_draw(path):
-    # return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
-    
+    # array of points for drone
     points = []
 
-    if path[1][1] == "S":
-        
+    if path[1] == "CSC":        
+        # start/end angles for drone arc
         angle_1A = path[2].theta1 * PI / 180
         angle_1B = path[2].theta2 * PI / 180
-        
-        if angle_1A < 0:
-            angle_1A += 2 * PI
-        
-        if angle_1B < 0:
-            angle_1B += 2 * PI
 
-        # angle_1A = min(angle_1A, angle_1B)
-        # angle_1B = max(angle_1A, angle_1B)
+        angle_increment_1 = ((angle_1B - angle_1A) % (2*PI)) / INCREMENTS
 
-        # if abs(angle_1B - angle_1A) < PI:
-        #     angle_1A, angle_1B = angle_1B, angle_1A
-
-        
-
-        angle_increment_A = (angle_1B - angle_1A) / INCREMENTS
-
-        print(angle_1A)
-        print(angle_1B)
-        print(angle_increment_A)
-        print('\n')
-
+        # discretizing points for drone arc
         for i in range(INCREMENTS):
-            # print(angle_1A + angle_increment_A * i)
-            temp_x1 = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_A * i)
-            temp_y1 = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_A * i)
+            temp_x = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_1 * i)
+            temp_y = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_1 * i)
 
-            ax.plot(temp_x1, temp_y1, color='purple', marker='.')
-            points.append([temp_x1, temp_y1])
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
+            points.append([temp_x, temp_y])
 
+        # start/end angles for waypoint arc
+        angle_2A = path[3].theta1 * PI / 180
+        angle_2B = path[3].theta2 * PI / 180
 
+        angle_increment_2 = ((angle_2B - angle_2A) % (2*PI)) / INCREMENTS
+
+        # discretizing points for waypoint arc
+        for i in range(INCREMENTS):
+            temp_x = path[7][0] + TURNRADIUS * math.cos(angle_2A + angle_increment_2 * i)
+            temp_y = path[7][1] + TURNRADIUS * math.sin(angle_2A + angle_increment_2 * i)
+
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
+            points.append([temp_x, temp_y])
+
+        x_increment = (path[5][0] - path[4][0]) / INCREMENTS
+        y_increment = (path[5][1] - path[4][1]) / INCREMENTS
+
+        # discretizing straight segment (not returned, solely for visualization)
+        for i in range(INCREMENTS + 1):
+            temp_x = path[4][0] + (x_increment * i)
+            temp_y = path[4][1] + (y_increment * i)
+
+            ax.plot(temp_x, temp_y, color='gray', marker='.')
+    
+    else:
+        # start/end angles for arc 1
+        angle_1A = path[2].theta1 * PI / 180
+        angle_1B = path[2].theta2 * PI / 180
+
+        angle_increment_1 = ((angle_1B - angle_1A) % (2*PI)) / INCREMENTS
+
+        # discretizing points for arc 1
+        for i in range(INCREMENTS):
+            temp_x = path[5][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_1 * i)
+            temp_y = path[5][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_1 * i)
+
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
+            points.append([temp_x, temp_y])
+
+        # start/end angles for arc 2
+        angle_2A = path[3].theta1 * PI / 180
+        angle_2B = path[3].theta2 * PI / 180
+
+        angle_increment_2 = ((angle_2B - angle_2A) % (2*PI)) / INCREMENTS
+
+        # discretizing points for arc 2
+        for i in range(INCREMENTS):
+            temp_x = path[7][0] + TURNRADIUS * math.cos(angle_2A + angle_increment_2 * i)
+            temp_y = path[7][1] + TURNRADIUS * math.sin(angle_2A + angle_increment_2 * i)
+
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
+            points.append([temp_x, temp_y])
+
+        # start/end angles for arc 3
+        angle_3A = path[4].theta1 * PI / 180
+        angle_3B = path[4].theta2 * PI / 180
+
+        angle_increment_3 = ((angle_3B - angle_3A) % (2*PI)) / INCREMENTS
+
+        # discretizing points for arc 3
+        for i in range(INCREMENTS):
+            temp_x = path[6][0] + TURNRADIUS * math.cos(angle_3A + angle_increment_3 * i)
+            temp_y = path[6][1] + TURNRADIUS * math.sin(angle_3A + angle_increment_3 * i)
+
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
+            points.append([temp_x, temp_y])
+
+    return points
 
 # path for right-left-right route
 def RLR(p1, p2, drone_pos, point_pos):
@@ -209,7 +255,7 @@ def RLR(p1, p2, drone_pos, point_pos):
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle3*180/PI, theta2 = angle4*180/PI, color = 'purple', linewidth = 1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle6*180/PI, theta2 = angle5*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, "RLR", curve1, curve2, curve3]
+    return [(abs(angle1 - angle2) + abs(angle4 - angle3) + abs(angle5 - angle6)) * TURNRADIUS, "CCC", curve1, curve2, curve3, p1, p2, p3]
 
 # path for left-right-left route
 def LRL(p1, p2, drone_pos, point_pos):
@@ -242,7 +288,7 @@ def LRL(p1, p2, drone_pos, point_pos):
     curve2 = Arc((p3[0], p3[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle4*180/PI, theta2 = angle3*180/PI, color = 'purple', linewidth = 1)
     curve3 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = angle5*180/PI, theta2 = angle6*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, "LRL", curve1, curve2, curve3]
+    return [(abs(angle2 - angle1) + abs(angle3 - angle4) + abs(angle6 - angle5)) * TURNRADIUS, "CCC", curve1, curve2, curve3, p1, p2, p3]
 
 # path for right-straight-right route
 def RSR(p1, p2, drone_pos, point_pos):
@@ -270,7 +316,7 @@ def RSR(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "RSR", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for left-straight-left route
 def LSL(p1, p2, drone_pos, point_pos):
@@ -297,7 +343,7 @@ def LSL(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "LSL", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for right-straight-left route
 def RSL(p1, p2, drone_pos, point_pos):
@@ -324,7 +370,7 @@ def RSL(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "RSL", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # path for left-straight-right route
 def LSR(p1, p2, drone_pos, point_pos):
@@ -351,7 +397,7 @@ def LSR(p1, p2, drone_pos, point_pos):
     curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
     curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
 
-    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "LSR", curve1, curve2, pf1, pf2, p1, p2]
+    return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", curve1, curve2, pf1, pf2, p1, p2]
 
 # redraws canvas to include new waypoint + vector
 def draw(ax):
