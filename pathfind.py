@@ -1,4 +1,3 @@
-from matplotlib.patches import Arc
 
 def test():
     print("HI")
