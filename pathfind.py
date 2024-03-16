@@ -7,7 +7,6 @@ def test():
 
 # path for right-left-right route
 def RLR(p1, p2, drone_pos, point_pos, TURNRADIUS):
-    print("RLR")
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
@@ -41,7 +40,6 @@ def RLR(p1, p2, drone_pos, point_pos, TURNRADIUS):
 
 # path for left-right-left route
 def LRL(p1, p2, drone_pos, point_pos, TURNRADIUS):
-    print("LRL")
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
@@ -75,7 +73,6 @@ def LRL(p1, p2, drone_pos, point_pos, TURNRADIUS):
 
 # path for right-straight-right route
 def RSR(p1, p2, drone_pos, point_pos, TURNRADIUS):
-    print("RSR")
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
@@ -103,7 +100,6 @@ def RSR(p1, p2, drone_pos, point_pos, TURNRADIUS):
 
 # path for left-straight-left route
 def LSL(p1, p2, drone_pos, point_pos, TURNRADIUS):
-    print("LSL")
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
@@ -131,7 +127,6 @@ def LSL(p1, p2, drone_pos, point_pos, TURNRADIUS):
 
 # path for right-straight-left route
 def RSL(p1, p2, drone_pos, point_pos, TURNRADIUS):
-    print("RSL")
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
@@ -159,7 +154,6 @@ def RSL(p1, p2, drone_pos, point_pos, TURNRADIUS):
 
 # path for left-straight-right route
 def LSR(p1, p2, drone_pos, point_pos, TURNRADIUS):
-    print("LSR")
     V = [p2[0] - p1[0], p2[1] - p1[1]]
     D = (V[0]**2 + V[1]**2)**.5
 
