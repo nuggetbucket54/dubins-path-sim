@@ -4,13 +4,10 @@ import csv
 
 gps = GPS_utils()
 
-
 csv_file_path = 'coords.csv'
 csv_data = []
 xCoords = []
 yCoords = []
-xLocal = []
-yLocal = []
 
 with open(csv_file_path, newline='') as csvfile:
     csv_reader = csv.DictReader(csvfile)
@@ -30,9 +27,6 @@ for row in csv_data[1:]:
 
     xCoords.append(enu.item(0))
     yCoords.append(enu.item(1))
-
-    xLocal.append(enu.item(0)*0.080)
-
 
 # Plot the points
 plt.scatter(xCoords, yCoords, color='blue')
