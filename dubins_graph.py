@@ -1,10 +1,51 @@
-import math
+import random, math
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.patches import Arc
+from matplotlib.widgets import Button, Slider
 from dubins_utils import RLR, LRL, RSL, LSR, RSR, LSL
-from gps_utils import GPS_utils
+# from gps_utils import GPS_UTILS
 
+# constants (feel free to play around and change these values)
+# color names for matplotlib: https://matplotlib.org/stable/gallery/color/named_colors.html
+DISCRETIZE_LABELS   =   ["Discretization: OFF", "Discretization: ON"]
+DISCRETIZE_COLORS   =   ["lightpink", "palegreen"]
+DISCRETIZE_FLAG     =   False
 INCREMENTS          =   8
 PI                  =   math.pi
+WIDTH               =   100
+HEIGHT              =   80
 TURNRADIUS          =   5
+
+# generates two random coordinates representing drone position and waypoint
+# (coordinates generated at least 10 units from edge of plot for easier visualization)
+def gen_coords(): 
+    return [random.randint(10, WIDTH - 10), random.randint(10, HEIGHT - 10)]
+
+# generates a vector representing orientation
+def gen_vec():
+    x1 = random.uniform(-1, 1)
+
+    # generate y component from x component
+    y1 = (1 - x1**2)**.5
+
+    # determine positive/negative y component
+    if (random.randint(0, 1) % 2):
+        y1 *= -1
+
+    return [x1, y1]
+
+# generates the next waypoint
+def next_point(event):
+    global drone_pos, drone_vec, point_pos, point_vec, ax
+
+    drone_pos = point_pos
+    drone_vec = point_vec
+
+    point_pos = gen_coords()
+    point_vec = gen_vec()
+
+    draw(ax)
 
 # iterates through and finds the shortest (optimal) route
 def find_best(paths):
@@ -17,7 +58,7 @@ def find_best(paths):
     return ind
 
 # finds optimal route
-def find_path(drone_pos, point_pos, drone_vec, point_vec):
+def find_path(ax):
     # finding focii of circles for drone
     drone_angle = math.atan2(drone_vec[1], drone_vec[0])
     drone_left_angle = drone_angle + PI/2
@@ -73,7 +114,28 @@ def find_path(drone_pos, point_pos, drone_vec, point_vec):
         except: pass
 
     best_path = paths[find_best(paths)]
-    return dot_draw(best_path)
+
+    if not DISCRETIZE_FLAG:
+        line_draw(best_path)
+    else:
+        dot_draw(best_path)
+
+    # drone and waypoint positions and orientations if needed:
+    # print(f"Drone position: {drone_pos}")
+    # print(f"Drone heading: {drone_vec}")
+    # print(f"Waypoint position: {point_pos}")
+    # print(f"Waypoint heading: {point_vec}")
+
+# draws the path as a line
+def line_draw(path):
+    if path[1] == "CSC":
+        ax.plot([path[4][0], path[5][0]], [path[4][1], path[5][1]], color='purple', linewidth = 1)
+        ax.add_patch(path[2])
+        ax.add_patch(path[3])
+    else:
+        ax.add_patch(path[2])
+        ax.add_patch(path[3])
+        ax.add_patch(path[4])
 
 # helper function to find appropriate increments for dot path
 def increments(angle):
@@ -99,6 +161,7 @@ def dot_draw(path):
             temp_x = path[6][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_1 * i)
             temp_y = path[6][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_1 * i)
 
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
             points.append([temp_x, temp_y])
 
         # start/end angles for waypoint arc
@@ -114,6 +177,7 @@ def dot_draw(path):
             temp_x = path[7][0] + TURNRADIUS * math.cos(angle_2A + angle_increment_2 * i)
             temp_y = path[7][1] + TURNRADIUS * math.sin(angle_2A + angle_increment_2 * i)
 
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
             points.append([temp_x, temp_y])
 
         x_increment = (path[5][0] - path[4][0]) / INCREMENTS
@@ -123,6 +187,8 @@ def dot_draw(path):
         for i in range(INCREMENTS + 1):
             temp_x = path[4][0] + (x_increment * i)
             temp_y = path[4][1] + (y_increment * i)
+
+            ax.plot(temp_x, temp_y, color='gray', marker='.')
     
     else:
         # start/end angles for arc 1
@@ -138,6 +204,7 @@ def dot_draw(path):
             temp_x = path[5][0] + TURNRADIUS * math.cos(angle_1A + angle_increment_1 * i)
             temp_y = path[5][1] + TURNRADIUS * math.sin(angle_1A + angle_increment_1 * i)
 
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
             points.append([temp_x, temp_y])
 
         # start/end angles for arc 2
@@ -153,6 +220,7 @@ def dot_draw(path):
             temp_x = path[7][0] + TURNRADIUS * math.cos(angle_2A + angle_increment_2 * i)
             temp_y = path[7][1] + TURNRADIUS * math.sin(angle_2A + angle_increment_2 * i)
 
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
             points.append([temp_x, temp_y])
 
         # start/end angles for arc 3
@@ -168,40 +236,69 @@ def dot_draw(path):
             temp_x = path[6][0] + TURNRADIUS * math.cos(angle_3A + angle_increment_3 * i)
             temp_y = path[6][1] + TURNRADIUS * math.sin(angle_3A + angle_increment_3 * i)
 
+            ax.plot(temp_x, temp_y, color='purple', marker='.')
             points.append([temp_x, temp_y])
 
     return points
 
-# initialize gps utility
-gps = GPS_utils()
+# redraws canvas to include new waypoint + vector
+def draw(ax):
+    ax.clear()
+    ax.set_xlim(0, WIDTH)
+    ax.set_ylim(0, HEIGHT)
+    ax.set_aspect('equal', adjustable='box')
+    ax.set_title('Dubins path sim')
 
-# get position of drone
-drone_lat = float(input("Enter drone latitude: "))
-drone_long = float(input("Enter drone longitude: "))
-drone_pos = [0, 0] # drone always positioned at origin
+    ax.plot(drone_pos[0], drone_pos[1], 'bo', label='Point 1')
+    ax.plot(point_pos[0], point_pos[1], 'ro', label='Point 2')
+    ax.quiver(drone_pos[0], drone_pos[1], drone_vec[0], drone_vec[1], color='blue')
+    ax.quiver(point_pos[0], point_pos[1], point_vec[0], point_vec[1], color='red')
+    plt.draw()
+    find_path(ax)
 
-# set local xy-origin to drone position
-gps.setENUorigin(drone_lat, drone_long, 0)
+# toggles discretization
+def discretize_callback(event):
+    global DISCRETIZE_FLAG
+    DISCRETIZE_FLAG = not DISCRETIZE_FLAG
 
-# set position of waypoint
-point_lat = float(input("Enter waypoint latitude: "))
-point_long = float(input("Enter waypoint longitude: "))
+    discretize_button.label.set_text(DISCRETIZE_LABELS[DISCRETIZE_FLAG])
+    discretize_button.color = DISCRETIZE_COLORS[DISCRETIZE_FLAG]
+    draw(ax)
 
-point_xy = gps.geo2enu(point_lat, point_long, 0)
-point_pos = [point_xy.item(0), point_xy.item(1)] 
+# adjusts turn radius
+def slider_update(val):
+    global TURNRADIUS
+    initial = TURNRADIUS
 
-drone_angle = float(input("Enter drone bearing (in degrees): ")) % 360
-point_angle = float(input("Enter waypoint bearing (in degrees): ")) % 360
+    TURNRADIUS = int(val)
 
-drone_vec = [math.cos(drone_angle), math.sin(drone_angle)]
-point_vec = [math.cos(point_angle), math.sin(point_angle)]
+    if initial != TURNRADIUS:
+        draw(ax)
 
-path_xy = find_path(drone_pos, point_pos, drone_vec, point_vec)
-path_gps = []
+# plot settings
+fig, ax = plt.subplots(figsize=(6,6))
+ax.set_axisbelow(True)
+plt.subplots_adjust(bottom=0.35)
 
-for p in path_xy:
-    geo = gps.enu2geo(p[0], p[1], 0)
-    path_gps.append([geo.item(0), geo.item(1)])
+drone_pos = gen_coords()
+point_pos = gen_coords()
+drone_vec = gen_vec()
+point_vec = gen_vec()
 
-for p in path_gps:
-    print(p)
+draw(ax)
+
+# button for next waypoint
+waypoint_ax = plt.axes([0.05, 0.20, 0.9, 0.08])
+waypoint_button = Button(waypoint_ax, 'Generate next waypoint', color="lightcyan")
+waypoint_button.on_clicked(next_point)
+
+discretize_ax = plt.axes([0.05, 0.10, 0.9, 0.08])
+discretize_button = Button(discretize_ax, DISCRETIZE_LABELS[0], color=DISCRETIZE_COLORS[0])
+discretize_button.on_clicked(discretize_callback)
+
+slider_ax = plt.axes([0.05, 0.04, 0.85, 0.04])
+slider = Slider(slider_ax, "", 1, 10, valinit=5, valfmt="%i")
+slider.on_changed(slider_update)
+
+# Display the plot
+plt.show()
