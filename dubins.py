@@ -135,7 +135,7 @@ def line_draw(path):
         ax.add_patch(path[3])
         ax.add_patch(path[4])
 
-# helper function to find appropriate increments
+# helper function to find appropriate increments for dot path
 def increments(angle):
     return int(angle * 180 / PI // 30) + 1 # one point every 20 degrees
 
