@@ -1,5 +1,5 @@
 # Dubins Path Simulator
-Algorithm for finding the optimal path of UAS drone given turning radius and waypoint coordinates  
+Algorithm for finding the optimal path of a vehicle given a minimum turning radius and destination
 
 ## What it does
 ### dubins\.py:
