@@ -6,7 +6,8 @@ Algorithm for finding the optimal path of a vehicle given a minimum turning radi
 Generates a series of GPS coordinates (latitude/longitude) that map out the Dubins path between two inputted GPS coordinates and headings (in degrees):
 
 For example, inputting the following:
-```Enter drone latitude: 49.263410
+```
+Enter drone latitude: 49.263410
 Enter drone longitude: -123.238651
 Enter waypoint latitude: 49.263275
 Enter waypoint longitude: -123.238456
