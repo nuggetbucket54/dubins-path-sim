@@ -24,16 +24,9 @@ def gen_coords():
 
 # generates a vector representing orientation
 def gen_vec():
-    x1 = random.uniform(-1, 1)
-
-    # generate y component from x component
-    y1 = (1 - x1**2)**.5
-
-    # determine positive/negative y component
-    if (random.randint(0, 1) % 2):
-        y1 *= -1
-
-    return [x1, y1]
+    angle = random.uniform(-180, 180)
+    print(angle)
+    return [math.cos(angle*PI/180), math.sin(angle*PI/180)]
 
 # generates the next waypoint
 def next_point(event):
