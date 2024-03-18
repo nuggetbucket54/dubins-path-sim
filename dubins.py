@@ -193,8 +193,8 @@ point_pos = [point_xy.item(0), point_xy.item(1)]
 drone_angle = float(input("Enter drone bearing (in degrees): ")) % 360
 point_angle = float(input("Enter waypoint bearing (in degrees): ")) % 360
 
-drone_vec = [math.cos(drone_angle), math.sin(drone_angle)]
-point_vec = [math.cos(point_angle), math.sin(point_angle)]
+drone_vec = [math.cos(drone_angle * PI/180), math.sin(drone_angle * PI/180)]
+point_vec = [math.cos(point_angle * PI/180), math.sin(point_angle * PI/180)]
 
 path_xy = find_path(drone_pos, point_pos, drone_vec, point_vec)
 path_gps = []
@@ -203,5 +203,7 @@ for p in path_xy:
     geo = gps.enu2geo(p[0], p[1], 0)
     path_gps.append([geo.item(0), geo.item(1)])
 
+print("\n")
+
 for p in path_gps:
-    print(p)
+    print(f"{p[0]}, {p[1]}")
