@@ -54,6 +54,10 @@ Randomly generates a theoretical drone/waypoint position/orientation and calcula
 
 </div>
 
+## How to run
+1. Make sure matplotlib is installed
+2. Um just run `dubins.py` for the algorithm only and `dubins_graph.py` for the interactive visualization tool lol
+
 ## About Dubins paths
 - [Dubins paths](https://en.wikipedia.org/wiki/Dubins_path) are the shortest path from one orientation & position to another orientation & position for a vehicle that can only move forward and also has a minimum turning radius
 - Here's a good visualization: https://www.youtube.com/watch?v=fEImNJQ3hUM 
