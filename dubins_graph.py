@@ -121,13 +121,20 @@ def find_path(ax):
 # draws the path as a line
 def line_draw(path):
     if path[1] == "CSC":
+        curve1 = Arc((path[6][0], path[6][1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = path[2][0], theta2 = path[2][1], color = 'purple', linewidth = 1)
+        curve2 = Arc((path[7][0], path[7][1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = path[3][0], theta2 = path[3][1], color = 'purple', linewidth = 1)
+
         ax.plot([path[4][0], path[5][0]], [path[4][1], path[5][1]], color='purple', linewidth = 1)
-        ax.add_patch(path[2])
-        ax.add_patch(path[3])
+        ax.add_patch(curve1)
+        ax.add_patch(curve2)
     else:
-        ax.add_patch(path[2])
-        ax.add_patch(path[3])
-        ax.add_patch(path[4])
+        curve1 = Arc((path[5][0], path[5][1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = path[2][0], theta2 = path[2][1], color = 'purple', linewidth = 1)
+        curve2 = Arc((path[6][0], path[6][1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = path[4][0], theta2 = path[4][1], color = 'purple', linewidth = 1)
+        curve3 = Arc((path[7][0], path[7][1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = path[3][0], theta2 = path[3][1], color = 'purple', linewidth = 1)
+
+        ax.add_patch(curve1)
+        ax.add_patch(curve2)
+        ax.add_patch(curve3)
 
 # helper function to find appropriate increments for dot path
 def increments(angle):
@@ -140,8 +147,8 @@ def dot_draw(path):
 
     if path[1] == "CSC":
         # start/end angles for drone arc
-        angle_1A = path[2].theta1 * PI / 180
-        angle_1B = path[2].theta2 * PI / 180
+        angle_1A = path[2][0] * PI / 180
+        angle_1B = path[2][1] * PI / 180
 
 
         angle_1 = ((angle_1B - angle_1A) % (2*PI))
@@ -157,8 +164,8 @@ def dot_draw(path):
             points.append([temp_x, temp_y])
 
         # start/end angles for waypoint arc
-        angle_2A = path[3].theta1 * PI / 180
-        angle_2B = path[3].theta2 * PI / 180
+        angle_2A = path[3][0] * PI / 180
+        angle_2B = path[3][1] * PI / 180
 
         angle_2 = (angle_2B - angle_2A) % (2*PI)
         INCREMENT_B = increments(angle_2)
@@ -184,8 +191,8 @@ def dot_draw(path):
     
     else:
         # start/end angles for arc 1
-        angle_1A = path[2].theta1 * PI / 180
-        angle_1B = path[2].theta2 * PI / 180
+        angle_1A = path[2][0] * PI / 180
+        angle_1B = path[2][1] * PI / 180
 
         angle_1 = ((angle_1B - angle_1A) % (2*PI))
         INCREMENT_A = increments(angle_1)
@@ -200,8 +207,8 @@ def dot_draw(path):
             points.append([temp_x, temp_y])
 
         # start/end angles for arc 2
-        angle_2A = path[3].theta1 * PI / 180
-        angle_2B = path[3].theta2 * PI / 180
+        angle_2A = path[3][0] * PI / 180
+        angle_2B = path[3][1] * PI / 180
 
         angle_2 = (angle_2B - angle_2A) % (2*PI)
         INCREMENT_B = increments(angle_2)
@@ -216,8 +223,8 @@ def dot_draw(path):
             points.append([temp_x, temp_y])
 
         # start/end angles for arc 3
-        angle_3A = path[4].theta1 * PI / 180
-        angle_3B = path[4].theta2 * PI / 180
+        angle_3A = path[4][0] * PI / 180
+        angle_3B = path[4][1] * PI / 180
 
         angle_3 = (angle_3B - angle_3A) % (2*PI)
         INCREMENT_C = increments(angle_3)
