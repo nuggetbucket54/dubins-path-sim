@@ -86,8 +86,8 @@ def dot_draw(path):
 
     if path[1] == "CSC":
         # start/end angles for drone arc
-        angle_1A = path[2].theta1 * PI / 180
-        angle_1B = path[2].theta2 * PI / 180
+        angle_1A = path[2][0] * PI / 180
+        angle_1B = path[2][1] * PI / 180
 
 
         angle_1 = ((angle_1B - angle_1A) % (2*PI))
@@ -102,8 +102,8 @@ def dot_draw(path):
             points.append([temp_x, temp_y])
 
         # start/end angles for waypoint arc
-        angle_2A = path[3].theta1 * PI / 180
-        angle_2B = path[3].theta2 * PI / 180
+        angle_2A = path[3][0] * PI / 180
+        angle_2B = path[3][1] * PI / 180
 
         angle_2 = (angle_2B - angle_2A) % (2*PI)
         INCREMENT_B = increments(angle_2)
@@ -126,8 +126,8 @@ def dot_draw(path):
     
     else:
         # start/end angles for arc 1
-        angle_1A = path[2].theta1 * PI / 180
-        angle_1B = path[2].theta2 * PI / 180
+        angle_1A = path[2][0] * PI / 180
+        angle_1B = path[2][1] * PI / 180
 
         angle_1 = ((angle_1B - angle_1A) % (2*PI))
         INCREMENT_A = increments(angle_1)
@@ -141,8 +141,8 @@ def dot_draw(path):
             points.append([temp_x, temp_y])
 
         # start/end angles for arc 2
-        angle_2A = path[3].theta1 * PI / 180
-        angle_2B = path[3].theta2 * PI / 180
+        angle_2A = path[3][0] * PI / 180
+        angle_2B = path[3][1] * PI / 180
 
         angle_2 = (angle_2B - angle_2A) % (2*PI)
         INCREMENT_B = increments(angle_2)
@@ -156,8 +156,8 @@ def dot_draw(path):
             points.append([temp_x, temp_y])
 
         # start/end angles for arc 3
-        angle_3A = path[4].theta1 * PI / 180
-        angle_3B = path[4].theta2 * PI / 180
+        angle_3A = path[4][0] * PI / 180
+        angle_3B = path[4][1] * PI / 180
 
         angle_3 = (angle_3B - angle_3A) % (2*PI)
         INCREMENT_C = increments(angle_3)
