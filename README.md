@@ -56,7 +56,7 @@ Randomly generates a theoretical drone/waypoint position/orientation and calcula
 </div>
 
 ## How to run
-1. Make sure matplotlib is installed
+1. Make sure matplotlib is installed for running `dubins_graph.py`
 2. Um just run `python3 dubins.py` for the algorithm only and `python3 dubins_graph.py` for the interactive visualization tool lol
 
 ## About Dubins paths
