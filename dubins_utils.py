@@ -1,4 +1,3 @@
-from matplotlib.patches import Arc
 import math
 PI = math.pi
 
@@ -82,10 +81,6 @@ def RSR(p1, p2, drone_pos, point_pos, TURNRADIUS):
     curve2_angle_a = math.atan2(point_pos[1] - p2[1], point_pos[0] - p2[0])
     curve2_angle_b = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
-    # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
-    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
-
     return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", [curve1_angle_b * 180/PI, curve1_angle_a * 180/PI], [curve2_angle_a * 180/PI, curve2_angle_b * 180/PI], pf1, pf2, p1, p2]
 
 # path for left-straight-left route
@@ -108,10 +103,6 @@ def LSL(p1, p2, drone_pos, point_pos, TURNRADIUS):
 
     curve2_angle_a = math.atan2(point_pos[1] - p2[1], point_pos[0] - p2[0])
     curve2_angle_b = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
-
-    # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
-    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", [curve1_angle_a * 180/PI, curve1_angle_b * 180/PI], [curve2_angle_b * 180/PI, curve2_angle_a * 180/PI], pf1, pf2, p1, p2]
 
@@ -136,10 +127,6 @@ def RSL(p1, p2, drone_pos, point_pos, TURNRADIUS):
     curve2_angle_a = math.atan2(point_pos[1] - p2[1], point_pos[0] - p2[0])
     curve2_angle_b = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
 
-    # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_b*180/PI, theta2 = curve1_angle_a*180/PI, color = 'purple', linewidth = 1)
-    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_b*180/PI, theta2 = curve2_angle_a*180/PI, color = 'purple', linewidth = 1)
-
     return [(abs(curve1_angle_a - curve1_angle_b) + abs(curve2_angle_a - curve2_angle_b)) * TURNRADIUS + D, "CSC", [curve1_angle_b * 180/PI, curve1_angle_a * 180/PI], [curve2_angle_b * 180/PI, curve2_angle_a * 180/PI], pf1, pf2, p1, p2]
 
 # path for left-straight-right route
@@ -162,9 +149,5 @@ def LSR(p1, p2, drone_pos, point_pos, TURNRADIUS):
 
     curve2_angle_a = math.atan2(point_pos[1] - p2[1], point_pos[0] - p2[0])
     curve2_angle_b = math.atan2(pf2[1] - p2[1], pf2[0] - p2[0])
-
-    # curve objects (actually graphed onto matplotlib)
-    curve1 = Arc((p1[0], p1[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve1_angle_a*180/PI, theta2 = curve1_angle_b*180/PI, color = 'purple', linewidth = 1)
-    curve2 = Arc((p2[0], p2[1]), 2*TURNRADIUS, 2*TURNRADIUS, theta1 = curve2_angle_a*180/PI, theta2 = curve2_angle_b*180/PI, color = 'purple', linewidth = 1)
 
     return [(abs(curve1_angle_b - curve1_angle_a) + abs(curve2_angle_b - curve2_angle_a)) * TURNRADIUS + D, "CSC", [curve1_angle_a * 180/PI, curve1_angle_b * 180/PI], [curve2_angle_a*180/PI, curve2_angle_b*180/PI], pf1, pf2, p1, p2]
