@@ -1,10 +1,8 @@
 import random, math
 import matplotlib.pyplot as plt
-import numpy as np
 from matplotlib.patches import Arc
 from matplotlib.widgets import Button, Slider
 from dubins_utils import RLR, LRL, RSL, LSR, RSR, LSL
-# from gps_utils import GPS_UTILS
 
 # constants (feel free to play around and change these values)
 # color names for matplotlib: https://matplotlib.org/stable/gallery/color/named_colors.html
