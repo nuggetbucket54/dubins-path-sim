@@ -2,20 +2,46 @@
 Algorithm for finding the optimal path of a vehicle given a minimum turning radius and destination
 
 ## What it does
+### main\.py:
+Gets drone and waypoint positions and headings through HTTP and returns the path as an array of discretized points through a POST request.
+
+Sample (truncated) return data:
+
+```
+{
+    "waypoints": [
+        {
+            "id": -1,
+            "name": "",
+            "lat": 38.31724554506665,
+            "long": -76.55609318023016,
+            "alt": 100.0
+        },
+        {
+            "id": -1,
+            "name": "",
+            "lat": 38.31726671913608,
+            "long": -76.55609202583662,
+            "alt": 100.0
+        }, ...
+    ]
+}
+```
+
 ### dubins\.py:
 Generates a series of GPS coordinates (latitude/longitude) that map out the Dubins path between two inputted GPS coordinates and headings (in degrees):
 
-For example, inputting the following:
+For example, if the following were inputted to the `dubin` function:
 ```
-Enter drone latitude: 49.263410
-Enter drone longitude: -123.238651
-Enter waypoint latitude: 49.263275
-Enter waypoint longitude: -123.238456
-Enter drone bearing (in degrees): -167.3
-Enter waypoint bearing (in degrees): 23.1
+Drone latitude = 49.263410
+Drone longitude = -123.238651
+Waypoint latitude = 49.263275
+Waypoint longitude = -123.238456
+Drone heading = -167.3
+Waypoint heading = 23.1
 ```
 
-Outputs the following list of GPS coordinates:
+The following list of GPS coordinates would be returned:
 ```
 49.26340999999999, -123.238651
 49.26340161316977, -123.23867810471107
@@ -56,8 +82,13 @@ Randomly generates a theoretical drone/waypoint position/orientation and calcula
 </div>
 
 ## How to run
-1. Make sure matplotlib is installed for running `dubins_graph.py`
-2. Um just run `python3 dubins.py` for the algorithm only and `python3 dubins_graph.py` for the interactive visualization tool lol
+### main\.py
+1. Install fastapi and pydantic with `pip install fastapi pydantic`
+2. Launch the web server with `uvicorn main:app --reload`
+
+### dubins_graph\.py
+1. Install matplotlib with `pip install matplotlib`
+2. Um just run `python3 dubins_graph.py` lol
 
 ## About Dubins paths
 - [Dubins paths](https://en.wikipedia.org/wiki/Dubins_path) are the shortest path from one orientation & position to another orientation & position for a vehicle that can only move forward and also has a minimum turning radius
