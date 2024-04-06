@@ -172,38 +172,29 @@ def dot_draw(path):
 
     return points
 
-# initialize gps utility
-gps = GPS_utils()
+# lat/long in float, angle in degrees
+def dubin(drone_lat, drone_long, drone_angle, point_lat, point_long, point_angle):
+    # initialize gps utility
+    gps = GPS_utils()
 
-# get position of drone
-drone_lat = float(input("Enter drone latitude: "))
-drone_long = float(input("Enter drone longitude: "))
-drone_pos = [0, 0] # drone always positioned at origin
+    # get position of drone
+    drone_pos = [0, 0] # drone always positioned at origin
 
-# set local xy-origin to drone position
-gps.setENUorigin(drone_lat, drone_long, 0)
+    # set local xy-origin to drone position
+    gps.setENUorigin(drone_lat, drone_long, 0)
 
-# set position of waypoint
-point_lat = float(input("Enter waypoint latitude: "))
-point_long = float(input("Enter waypoint longitude: "))
 
-point_xy = gps.geo2enu(point_lat, point_long, 0)
-point_pos = [point_xy.item(0), point_xy.item(1)] 
+    point_xy = gps.geo2enu(point_lat, point_long, 0)
+    point_pos = [point_xy.item(0), point_xy.item(1)] 
 
-drone_angle = float(input("Enter drone bearing (in degrees): ")) % 360
-point_angle = float(input("Enter waypoint bearing (in degrees): ")) % 360
+    drone_vec = [math.cos(drone_angle * PI/180), math.sin(drone_angle * PI/180)]
+    point_vec = [math.cos(point_angle * PI/180), math.sin(point_angle * PI/180)]
 
-drone_vec = [math.cos(drone_angle * PI/180), math.sin(drone_angle * PI/180)]
-point_vec = [math.cos(point_angle * PI/180), math.sin(point_angle * PI/180)]
+    path_xy = find_path(drone_pos, point_pos, drone_vec, point_vec)
+    path_gps = []
 
-path_xy = find_path(drone_pos, point_pos, drone_vec, point_vec)
-path_gps = []
-
-for p in path_xy:
-    geo = gps.enu2geo(p[0], p[1], 0)
-    path_gps.append([geo.item(0), geo.item(1)])
-
-print("\n")
-
-for p in path_gps:
-    print(f"{p[0]}, {p[1]}")
+    for p in path_xy:
+        geo = gps.enu2geo(p[0], p[1], 0)
+        path_gps.append([geo.item(0), geo.item(1)])
+    
+    return path_gps
