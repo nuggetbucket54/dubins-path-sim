@@ -183,7 +183,6 @@ def dubin(drone_lat, drone_long, drone_angle, point_lat, point_long, point_angle
     # set local xy-origin to drone position
     gps.setENUorigin(drone_lat, drone_long, 0)
 
-
     point_xy = gps.geo2enu(point_lat, point_long, 0)
     point_pos = [point_xy.item(0), point_xy.item(1)] 
 
