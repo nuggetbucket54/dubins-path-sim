@@ -1,9 +1,6 @@
 import math
 PI = math.pi
 
-def test():
-    print("HI")
-
 # path for right-left-right route
 def RLR(p1, p2, drone_pos, point_pos, TURNRADIUS):
     V = [p2[0] - p1[0], p2[1] - p1[1]]
