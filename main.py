@@ -48,9 +48,9 @@ async def root(item: Item):
     for p in points:
         waypoints.append(create_item(p[0], p[1], alt))
 
-    print('\n'*10)
-    for w in waypoints:
-        print(str(w["lat"])+","+str(w["long"]))
-    print('\n'*10)
+    # print('\n'*10)
+    # for w in waypoints:
+    #     print(str(w["lat"])+","+str(w["long"]))
+    # print('\n'*10)
 
     return {"waypoints": waypoints}
