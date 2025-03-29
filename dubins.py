@@ -189,9 +189,11 @@ def dubin(drone_lat, drone_long, drone_angle, point_lat, point_long, point_angle
     drone_vec = [math.cos(drone_angle * PI/180), math.sin(drone_angle * PI/180)]
     point_vec = [math.cos(point_angle * PI/180), math.sin(point_angle * PI/180)]
 
+    # get the path as discretized points
     path_xy = find_path(drone_pos, point_pos, drone_vec, point_vec)
     path_gps = []
 
+    # convert points back to GPS
     for p in path_xy:
         geo = gps.enu2geo(p[0], p[1], 0)
         path_gps.append([geo.item(0), geo.item(1)])
